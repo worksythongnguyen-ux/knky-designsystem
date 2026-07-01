@@ -50,6 +50,7 @@ export const semanticColorGroups: { title: string; tokens: TokenEntry[] }[] = [
       { token: "--knky-color-bg-surface-zebra", name: "bg-surface-zebra" },
       { token: "--knky-color-bg-hover", name: "bg-hover" },
       { token: "--knky-color-bg-disabled", name: "bg-disabled" },
+      { token: "--knky-color-bg-surface-disabled", name: "bg-surface-disabled" },
     ],
   },
   {
@@ -57,6 +58,7 @@ export const semanticColorGroups: { title: string; tokens: TokenEntry[] }[] = [
     tokens: [
       { token: "--knky-color-border", name: "border" },
       { token: "--knky-color-border-hover", name: "border-hover" },
+      { token: "--knky-color-border-active", name: "border-active" },
     ],
   },
   {

@@ -1,0 +1,213 @@
+/* Styles for InputText - matches the "input-text" design in Figma (node 112:4385).
+   States map to native HTML/CSS wherever possible instead of extra JS state:
+   - hover      -> :hover
+   - focus      -> :focus-within (input has native :focus)
+   - filled     -> :has(.input:not(:placeholder-shown))
+   - disabled   -> native `disabled` attribute / :has(.input:disabled)
+   - read only  -> native `readOnly` attribute / :has(.input:read-only)
+   - error      -> prop-driven only (.error modifier class), since it's a validation
+                   result, not a browser-native state. */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-4);
+  width: 100%;
+}
+
+.labelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-0);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--knky-space-8);
+}
+
+.label {
+  flex: 1 0 0;
+  min-width: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-font-weight-semibold);
+  color: var(--knky-color-text-primary);
+}
+
+.action {
+  flex-shrink: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-font-weight-semibold);
+  color: var(--knky-color-link);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.action:hover {
+  color: var(--knky-color-link-hover);
+}
+.action:active {
+  color: var(--knky-color-link-active);
+}
+
+.helpText {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-xs-size);
+  line-height: var(--knky-body-xs-line-height);
+  font-weight: var(--knky-font-weight-regular);
+  color: var(--knky-color-text-secondary);
+}
+
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
+  border-radius: var(--knky-radius-sm);
+}
+
+.large {
+  max-height: 32px;
+}
+.small {
+  max-height: 36px;
+}
+
+.affix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--knky-color-icon-default);
+}
+.large .affix {
+  padding: var(--knky-space-6);
+}
+.small .affix {
+  padding: var(--knky-space-8);
+}
+
+.input {
+  flex: 1 0 0;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--knky-font-family-base);
+  color: var(--knky-color-text-secondary);
+  padding: var(--knky-space-6) var(--knky-space-8);
+}
+.input::placeholder {
+  color: var(--knky-color-text-secondary);
+}
+.large .input {
+  font-size: var(--knky-body-mg-size);
+  line-height: var(--knky-body-mg-line-height);
+  font-weight: var(--knky-font-weight-semibold);
+}
+.small .input {
+  font-size: var(--knky-input-mobile-size);
+  line-height: var(--knky-input-mobile-line-height);
+  font-weight: var(--knky-input-mobile-weight);
+}
+
+/* --- Interaction states (skipped entirely when disabled or read-only) --- */
+
+.box:hover:not(:has(.input:disabled)):not(:has(.input:read-only)) {
+  border-color: var(--knky-color-border-hover);
+}
+
+.box:has(.input:not(:placeholder-shown)):not(:has(.input:read-only)):not(:has(.input:disabled)) {
+  border-color: var(--knky-color-border-hover);
+}
+.box:has(.input:not(:placeholder-shown)):not(:has(.input:read-only)):not(:has(.input:disabled)) .input {
+  color: var(--knky-color-text-primary);
+}
+
+.box:focus-within:not(:has(.input:read-only)):not(:has(.input:disabled)) {
+  border-color: var(--knky-color-border-hover);
+}
+.box:focus-within:not(:has(.input:read-only)):not(:has(.input:disabled))::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--knky-color-border-active);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+/* --- Disabled / read-only --- */
+
+.box:has(.input:disabled) {
+  background: var(--knky-color-bg-surface-disabled);
+}
+.input:disabled {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}
+.box:has(.input:disabled) .affix {
+  color: var(--knky-color-icon-disabled);
+}
+
+.box:has(.input:read-only) {
+  background: var(--knky-color-bg-surface-disabled);
+}
+
+/* --- Error (prop-driven, overrides the states above) --- */
+
+.error {
+  background: var(--knky-color-status-critical-bg);
+  border-color: var(--knky-color-status-critical-element);
+}
+.error .input {
+  color: var(--knky-color-text-primary);
+}
+.error:hover,
+.error:focus-within {
+  border-color: var(--knky-color-status-critical-element);
+}
+.error:focus-within::after {
+  border-color: var(--knky-color-status-critical-element);
+}
+
+/* --- Alert line (info / error text below the input) --- */
+
+.alertLine {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--knky-space-4);
+  width: 100%;
+}
+
+.alertText {
+  flex: 1 0 0;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-secondary);
+}
+.alertText.errorText {
+  color: var(--knky-color-status-critical-element);
+}
+
+.alertIcon {
+  flex-shrink: 0;
+}

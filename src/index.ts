@@ -28,3 +28,6 @@ export type {
   SortIconProps,
   CloseIconProps,
 } from "./components/Icon";
+
+export { InputText } from "./components/InputText";
+export type { InputTextProps, InputTextAction } from "./components/InputText";
