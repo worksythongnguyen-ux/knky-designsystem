@@ -48,8 +48,11 @@
   font-weight: var(--knky-font-weight-semibold);
   color: var(--knky-color-link);
   text-decoration: underline;
+  appearance: none;
+  -webkit-appearance: none;
   background: none;
   border: none;
+  margin: 0;
   padding: 0;
   cursor: pointer;
   white-space: nowrap;
@@ -72,6 +75,7 @@
 }
 
 .box {
+  box-sizing: border-box;
   position: relative;
   display: flex;
   align-items: center;
@@ -82,13 +86,16 @@
 }
 
 .large {
+  height: 32px;
   max-height: 32px;
 }
 .small {
+  height: 36px;
   max-height: 36px;
 }
 
 .affix {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,8 +110,13 @@
 }
 
 .input {
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
   flex: 1 0 0;
   min-width: 0;
+  height: 100%;
+  margin: 0;
   border: none;
   outline: none;
   background: transparent;
@@ -116,9 +128,12 @@
   color: var(--knky-color-text-secondary);
 }
 .large .input {
-  font-size: var(--knky-body-mg-size);
-  line-height: var(--knky-body-mg-line-height);
-  font-weight: var(--knky-font-weight-semibold);
+  /* Corrected against the Input text component's Figma Dev Mode code: the value text
+     uses bodyLg (14/20/Regular). bodyMg (14/20/Semibold) is only used for the Label
+     above the field, not the input value itself. */
+  font-size: var(--knky-body-lg-size);
+  line-height: var(--knky-body-lg-line-height);
+  font-weight: var(--knky-body-lg-weight);
 }
 .small .input {
   font-size: var(--knky-input-mobile-size);
@@ -145,7 +160,9 @@
 .box:focus-within:not(:has(.input:read-only)):not(:has(.input:disabled))::after {
   content: "";
   position: absolute;
-  inset: -4px;
+  /* Figma's focus ring is h-[38px] over a 32px box (h-[42px] over a 36px small box) —
+     that's +3px top/bottom but +4px left/right, not a uniform -4px inset. */
+  inset: -3px -4px;
   border: 2px solid var(--knky-color-border-active);
   border-radius: var(--knky-radius-md);
   pointer-events: none;

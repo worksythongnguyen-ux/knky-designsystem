@@ -1,6 +1,29 @@
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  useId,
+  type InputHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import styles from "./InputText.module.css";
-import { AlertErrorIcon, AlertInfoIcon } from "../Icon";
+import { AlertErrorIcon, AlertInfoIcon, type IconTone } from "../Icon";
+
+/**
+ * Prefix/suffix icons switch to the "disabled" icon tone when the field is disabled
+ * or read-only (Figma Dev Mode groups both states under the same disabled-tinted icon
+ * asset). Only applies to elements that accept a `tone` prop (our own Icon
+ * components); anything else passes through unchanged.
+ */
+function withAffixTone(node: ReactNode, tone: IconTone): ReactNode {
+  // Only clone custom components (our Icon set), never raw DOM tags — cloning a plain
+  // <span>/<svg> etc. with `tone` would leak it onto the DOM as an invalid attribute.
+  if (isValidElement(node) && typeof node.type !== "string") {
+    return cloneElement(node as ReactElement<{ tone?: IconTone }>, { tone });
+  }
+  return node;
+}
 
 export interface InputTextAction {
   /** Text of the small link shown to the right of the label (e.g. "Forgot password?"). */
@@ -75,6 +98,10 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
     [helpText ? helpTextId : null, showAlertLine ? alertId : null].filter(Boolean).join(" ") ||
     undefined;
 
+  const isDisabledOrReadOnly = Boolean(rest.disabled || rest.readOnly);
+  const renderedPrefix = isDisabledOrReadOnly ? withAffixTone(prefix, "disabled") : prefix;
+  const renderedSuffix = isDisabledOrReadOnly ? withAffixTone(suffix, "disabled") : suffix;
+
   return (
     <div className={[styles.wrapper, wrapperClassName].filter(Boolean).join(" ")}>
       {(label || action) && (
@@ -109,7 +136,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
           .filter(Boolean)
           .join(" ")}
       >
-        {prefix && <span className={styles.affix}>{prefix}</span>}
+        {prefix && <span className={styles.affix}>{renderedPrefix}</span>}
         <input
           ref={ref}
           id={inputId}
@@ -118,7 +145,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
           aria-describedby={describedBy}
           {...rest}
         />
-        {suffix && <span className={styles.affix}>{suffix}</span>}
+        {suffix && <span className={styles.affix}>{renderedSuffix}</span>}
       </div>
 
       {showAlertLine && (

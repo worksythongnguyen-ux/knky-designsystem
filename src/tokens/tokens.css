@@ -223,7 +223,10 @@
   /* Input (mobile) */
   --knky-input-mobile-size: 16px;
   --knky-input-mobile-line-height: 24px;
-  --knky-input-mobile-weight: var(--knky-font-weight-medium);
+  /* Corrected against the Input text component's Dev Mode code (screenSize="small"
+     input text): font-['SF_Pro_Display:Regular'], not Medium as the Typography doc
+     screenshot suggested. */
+  --knky-input-mobile-weight: var(--knky-font-weight-regular);
 
   /* Heading variants */
   --knky-heading-xs-size: 12px;
