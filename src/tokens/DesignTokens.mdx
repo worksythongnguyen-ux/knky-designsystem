@@ -1,0 +1,61 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import "./tokens.css";
+import { ColorGroup, SpaceSwatch, RadiusSwatch, TypeSample } from "./TokenPreview";
+import {
+  primitiveColorGroups,
+  semanticColorGroups,
+  spaceScale,
+  radiusScale,
+  typographyScale,
+} from "./tokenData";
+
+<Meta title="Foundations/Design Tokens" />
+
+# Design Tokens
+
+Single source of truth for colors, spacing, radius and typography, pulled from the
+**KNKY - DS** Figma file's Variables. Defined in `src/tokens/tokens.css` as CSS custom
+properties (`--knky-*`). Reuse these in every new component instead of hardcoding raw
+values — the swatches below always show the live value currently in `tokens.css`.
+
+## Colors — Primitive palette
+
+{primitiveColorGroups.map((group) => (
+  <ColorGroup key={group.title} title={group.title} tokens={group.tokens} />
+))}
+
+## Colors — Semantic (light mode)
+
+{semanticColorGroups.map((group) => (
+  <ColorGroup key={group.title} title={group.title} tokens={group.tokens} />
+))}
+
+## Spacing
+
+<div>
+  {spaceScale.map((s) => (
+    <SpaceSwatch key={s.token} token={s.token} name={s.name} />
+  ))}
+</div>
+
+## Radius
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+  {radiusScale.map((r) => (
+    <RadiusSwatch key={r.token} token={r.token} name={r.name} />
+  ))}
+</div>
+
+## Typography
+
+<div>
+  {typographyScale.map((t) => (
+    <TypeSample
+      key={t.name}
+      name={t.name}
+      sizeVar={t.sizeVar}
+      lineVar={t.lineVar}
+      weightVar={t.weightVar}
+    />
+  ))}
+</div>
