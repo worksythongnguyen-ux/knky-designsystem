@@ -2,21 +2,28 @@
  * Icon set — matches the "Icons" page of the KNKY - DS Figma file
  * (design tokens --knky-icon-arrow, --knky-icon-sort, --knky-icon-close, --knky-icon-loading,
  * --knky-icon-check, --knky-icon-alert-error/warning/info/question, --knky-icon-edit,
- * --knky-icon-trash, --knky-icon-search).
+ * --knky-icon-trash, --knky-icon-search, --knky-icon-placeholder).
  *
- * Note on fidelity: Figma's Dev Mode MCP server serves the exact icon artwork from a
- * localhost asset server that is only reachable from the machine running Figma Desktop,
- * not from this environment — so the exact vector paths could not be pulled 1:1. These are
- * redrawn as clean, standard outline icons matching what's shown in the Figma previews
- * (chevron, sort, X/close, spinner, check, alert circles/triangle, pencil, trash, search).
- * If pixel-perfect paths are needed later, export the layers from Figma as SVG
- * ("Copy/Export as SVG") and swap the `<path>` data in here.
+ * Path data below was copied 1:1 from SVGs exported directly out of Figma (Export -> SVG),
+ * so these are pixel-accurate to the design, not redrawn approximations.
  *
- * All icons: 20x20 viewBox, 16x16 safe content area, stroke = currentColor (so color is
- * controlled via CSS `color`), consistent stroke width/caps/joins.
+ * All icons: 20x20 viewBox, filled shapes (fill = currentColor, no stroke), so color is
+ * controlled entirely via the `tone` / `color` props below.
  */
 import type { SVGProps } from "react";
 import styles from "./Icon.module.css";
+
+/**
+ * Semantic icon color states, wired to the design system's own icon color tokens
+ * (Figma "Colors" page -> Icon group): --knky-color-icon-default/active/disabled.
+ */
+export type IconTone = "default" | "active" | "disabled";
+
+const TONE_TOKEN: Record<IconTone, string> = {
+  default: "var(--knky-color-icon-default)",
+  active: "var(--knky-color-icon-active)",
+  disabled: "var(--knky-color-icon-disabled)",
+};
 
 export interface IconProps {
   /** Width & height in px. Defaults to 20 (the Figma icon container size). */
@@ -24,12 +31,26 @@ export interface IconProps {
   className?: string;
   /** Accessible label. When omitted, the icon is treated as decorative (aria-hidden). */
   title?: string;
+  /**
+   * Semantic color state, using the design system's icon color tokens. Defaults to
+   * "default" (--knky-color-icon-default). Ignored if `color` is set.
+   */
+  tone?: IconTone;
+  /**
+   * Escape hatch for any other CSS color — e.g. a status color for alert icons
+   * (`color="var(--knky-color-status-critical-element)"`), or a value inherited from a
+   * parent via `currentColor`. Overrides `tone` when set.
+   */
+  color?: string;
 }
 
 function IconSvg({
   size = 20,
   className,
   title,
+  tone = "default",
+  color,
+  style,
   children,
   ...rest
 }: IconProps & { children: React.ReactNode } & SVGProps<SVGSVGElement>) {
@@ -38,12 +59,9 @@ function IconSvg({
       width={size}
       height={size}
       viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       className={className}
+      style={{ color: color ?? TONE_TOKEN[tone], ...style }}
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
       {...rest}
@@ -59,34 +77,41 @@ export interface ArrowIconProps extends IconProps {
   direction?: "down" | "up" | "prev" | "next";
 }
 
+const ARROW_PATH: Record<NonNullable<ArrowIconProps["direction"]>, string> = {
+  down: "M5.23123 7.23964C5.53954 6.92012 6.03941 6.92012 6.34772 7.23964L10 11.0247L13.6523 7.23964C13.9606 6.92012 14.4605 6.92012 14.7688 7.23964C15.0771 7.55916 15.0771 8.0772 14.7688 8.39672L10.5582 12.7604C10.2499 13.0799 9.75007 13.0799 9.44176 12.7604L5.23123 8.39672C4.92292 8.0772 4.92292 7.55916 5.23123 7.23964Z",
+  up: "M5.23123 12.7604C5.53954 13.0799 6.03941 13.0799 6.34772 12.7604L10 8.97527L13.6523 12.7604C13.9606 13.0799 14.4605 13.0799 14.7688 12.7604C15.0771 12.4408 15.0771 11.9228 14.7688 11.6033L10.5582 7.23964C10.2499 6.92012 9.75007 6.92012 9.44176 7.23964L5.23123 11.6033C4.92292 11.9228 4.92292 12.4408 5.23123 12.7604Z",
+  prev: "M12.7604 14.7688C13.0799 14.4605 13.0799 13.9606 12.7604 13.6523L8.97527 10L12.7604 6.34772C13.0799 6.03941 13.0799 5.53954 12.7604 5.23123C12.4408 4.92292 11.9228 4.92292 11.6033 5.23123L7.23964 9.44176C6.92012 9.75007 6.92012 10.2499 7.23964 10.5582L11.6033 14.7688C11.9228 15.0771 12.4408 15.0771 12.7604 14.7688Z",
+  next: "M7.23964 5.23123C6.92012 5.53954 6.92012 6.03941 7.23964 6.34772L11.0247 10L7.23964 13.6523C6.92012 13.9606 6.92012 14.4605 7.23964 14.7688C7.55916 15.0771 8.0772 15.0771 8.39672 14.7688L12.7604 10.5582C13.0799 10.2499 13.0799 9.75007 12.7604 9.44176L8.39672 5.23123C8.0772 4.92292 7.55916 4.92292 7.23964 5.23123Z",
+};
+
 export function ArrowIcon({ direction = "down", ...props }: ArrowIconProps) {
-  const d =
-    direction === "up"
-      ? "M5 13l5-6 5 6"
-      : direction === "prev"
-        ? "M13 5l-6 5 6 5"
-        : direction === "next"
-          ? "M7 5l6 5-6 5"
-          : "M5 7l5 6 5-6";
   return (
     <IconSvg {...props}>
-      <path d={d} />
+      <path fillRule="evenodd" clipRule="evenodd" d={ARROW_PATH[direction]} />
     </IconSvg>
   );
 }
 
+const SORT_UP_PATH =
+  "M10.9428 3.94466C10.4221 3.42396 9.57789 3.42396 9.05719 3.94466L6.23431 6.76754C5.9219 7.07996 5.9219 7.58649 6.23431 7.89891C6.54673 8.21133 7.05327 8.21133 7.36569 7.89891L10 5.26459L12.6343 7.89891C12.9467 8.21133 13.4533 8.21133 13.7657 7.89891C14.0781 7.58649 14.0781 7.07996 13.7657 6.76754L10.9428 3.94466Z";
+const SORT_DOWN_PATH =
+  "M13.7657 13.2324L10.9428 16.0553C10.4221 16.576 9.57789 16.576 9.05719 16.0553L6.23431 13.2324C5.9219 12.92 5.9219 12.4135 6.23431 12.101C6.54673 11.7886 7.05327 11.7886 7.36569 12.101L10 14.7353L12.6343 12.101C12.9467 11.7886 13.4533 11.7886 13.7657 12.101C14.0781 12.4135 14.0781 12.92 13.7657 13.2324Z";
+
 export interface SortIconProps extends IconProps {
-  /** Figma variants: "bottom up" -> asc, "top down" -> desc, "all" -> both */
+  /** Figma variants: "bottom up" | "top down" | "all" */
   direction?: "asc" | "desc" | "both";
 }
 
+/** The non-active chevron in the two-tone sort icon uses the disabled icon token. */
+const SORT_MUTED = "var(--knky-color-icon-disabled)";
+
 export function SortIcon({ direction = "both", ...props }: SortIconProps) {
-  const upOpacity = direction === "desc" ? 0.35 : 1;
-  const downOpacity = direction === "asc" ? 0.35 : 1;
+  const upFill = direction === "desc" ? SORT_MUTED : "currentColor";
+  const downFill = direction === "asc" ? SORT_MUTED : "currentColor";
   return (
     <IconSvg {...props}>
-      <path d="M6 8.5l4-3.5 4 3.5" opacity={upOpacity} />
-      <path d="M6 11.5l4 3.5 4-3.5" opacity={downOpacity} />
+      <path d={SORT_UP_PATH} fill={upFill} />
+      <path d={SORT_DOWN_PATH} fill={downFill} />
     </IconSvg>
   );
 }
@@ -100,14 +125,18 @@ export function CloseIcon({ variant = "default", ...props }: CloseIconProps) {
   if (variant === "clear") {
     return (
       <IconSvg {...props}>
-        <circle cx={10} cy={10} r={9} fill="currentColor" stroke="none" />
-        <path d="M7 7l6 6M13 7l-6 6" stroke="var(--knky-color-neutral-white, #fff)" />
+        <path d="M11.9004 6.7002C12.287 6.31369 12.9132 6.31363 13.2998 6.7002C13.6864 7.08676 13.6863 7.713 13.2998 8.09961L11.4004 10L13.2998 11.9004C13.6863 12.287 13.6864 12.9132 13.2998 13.2998C12.9132 13.6864 12.287 13.6863 11.9004 13.2998L10 11.4004L8.09961 13.2998C7.713 13.6863 7.08676 13.6864 6.7002 13.2998C6.31363 12.9132 6.31369 12.287 6.7002 11.9004L8.59961 10L6.7002 8.09961C6.31369 7.713 6.31363 7.08676 6.7002 6.7002C7.08676 6.31363 7.713 6.31369 8.09961 6.7002L10 8.59961L11.9004 6.7002Z" />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1ZM10 2.7002C5.96832 2.7002 2.7002 5.96832 2.7002 10C2.7002 14.0317 5.96832 17.2998 10 17.2998C14.0317 17.2998 17.2998 14.0317 17.2998 10C17.2998 5.96832 14.0317 2.7002 10 2.7002Z"
+        />
       </IconSvg>
     );
   }
   return (
     <IconSvg {...props}>
-      <path d="M4.4 4.4l11.2 11.2M15.6 4.4L4.4 15.6" />
+      <path d="M6.09998 15.3C5.71338 15.6866 5.08658 15.6866 4.69998 15.3C4.31338 14.9134 4.31338 14.2866 4.69998 13.9L8.59998 9.99998L4.69998 6.09998C4.31338 5.71338 4.31338 5.08658 4.69998 4.69998C5.08658 4.31338 5.71338 4.31338 6.09998 4.69998L9.99998 8.59998L13.9 4.69998C14.2866 4.31338 14.9134 4.31338 15.3 4.69998C15.6866 5.08658 15.6866 5.71338 15.3 6.09998L11.4 9.99998L15.3 13.9C15.6866 14.2866 15.6866 14.9134 15.3 15.3C14.9134 15.6866 14.2866 15.6866 13.9 15.3L9.99998 11.4L6.09998 15.3Z" />
     </IconSvg>
   );
 }
@@ -115,7 +144,11 @@ export function CloseIcon({ variant = "default", ...props }: CloseIconProps) {
 export function LoadingIcon(props: IconProps) {
   return (
     <IconSvg {...props} className={[styles.spin, props.className].filter(Boolean).join(" ")}>
-      <circle cx={10} cy={10} r={7} strokeDasharray="33 11" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M9.24125 3.68251C9.39665 4.19173 9.11058 4.73074 8.60228 4.88642C7.74155 5.15005 6.96391 5.63312 6.34553 6.28831C5.72715 6.94351 5.28923 7.74836 5.07464 8.62406C4.86006 9.49976 4.87617 10.4163 5.12141 11.2839C5.36665 12.1515 5.83259 12.9404 6.47362 13.5733C7.11465 14.2063 7.90879 14.6616 8.77826 14.8947C9.64773 15.1278 10.5627 15.1307 11.4336 14.9031C12.3045 14.6755 13.1015 14.2251 13.7465 13.5962C14.3915 12.9673 14.8624 12.1813 15.113 11.3153C15.2611 10.8039 15.7949 10.5095 16.3054 10.6578C16.8159 10.8061 17.1097 11.3409 16.9617 11.8523C16.6182 13.0391 15.9729 14.1162 15.089 14.978C14.2051 15.8399 13.113 16.457 11.9195 16.7689C10.7261 17.0809 9.47218 17.0769 8.28068 16.7575C7.08919 16.438 6.00093 15.8141 5.12248 14.9467C4.24403 14.0793 3.60551 12.9982 3.26944 11.8093C2.93338 10.6203 2.9113 9.36438 3.20536 8.16434C3.49942 6.96431 4.09954 5.86135 4.94695 4.9635C5.79436 4.06564 6.86 3.40366 8.03953 3.04238C8.54782 2.8867 9.08585 3.1733 9.24125 3.68251Z"
+      />
     </IconSvg>
   );
 }
@@ -123,7 +156,11 @@ export function LoadingIcon(props: IconProps) {
 export function CheckIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <path d="M6 10.5l3 3 6-6.5" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M13.9103 7.21967C14.2032 7.51256 14.2032 7.98744 13.9103 8.28033L9.41034 12.7803C9.11744 13.0732 8.64257 13.0732 8.34967 12.7803L6.09967 10.5303C5.80678 10.2374 5.80678 9.76256 6.09967 9.46967C6.39257 9.17678 6.86744 9.17678 7.16033 9.46967L8.88 11.1893L12.8497 7.21967C13.1426 6.92678 13.6174 6.92678 13.9103 7.21967Z"
+      />
     </IconSvg>
   );
 }
@@ -131,9 +168,13 @@ export function CheckIcon(props: IconProps) {
 export function AlertErrorIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <circle cx={10} cy={10} r={7} />
-      <line x1={10} y1={7} x2={10} y2={11} />
-      <circle cx={10} cy={13.5} r={0.75} fill="currentColor" stroke="none" />
+      <path d="M11 13.5C11 14.0523 10.5523 14.5 10 14.5C9.44772 14.5 9 14.0523 9 13.5C9 12.9477 9.44772 12.5 10 12.5C10.5523 12.5 11 12.9477 11 13.5Z" />
+      <path d="M10.75 6.25001C10.75 5.8358 10.4142 5.50001 10 5.5C9.5858 5.49999 9.25001 5.83578 9.25 6.24999L9.24994 10.75C9.24993 11.1642 9.58572 11.5 9.99993 11.5C10.4141 11.5 10.7499 11.1642 10.7499 10.75L10.75 6.25001Z" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17ZM10 15.5C13.0376 15.5 15.5 13.0376 15.5 10C15.5 6.96243 13.0376 4.5 10 4.5C6.96243 4.5 4.5 6.96243 4.5 10C4.5 13.0376 6.96243 15.5 10 15.5Z"
+      />
     </IconSvg>
   );
 }
@@ -141,9 +182,13 @@ export function AlertErrorIcon(props: IconProps) {
 export function AlertWarningIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <path d="M10 3.5L17 16H3z" />
-      <line x1={10} y1={8.5} x2={10} y2={12} />
-      <circle cx={10} cy={14} r={0.75} fill="currentColor" stroke="none" />
+      <path d="M10 10.5C10.4142 10.5001 10.75 10.8358 10.75 11.25V13.75C10.75 14.1642 10.4142 14.5 10 14.5C9.58581 14.5 9.25003 14.1642 9.25002 13.75V11.25C9.25002 10.8358 9.58581 10.5 10 10.5Z" />
+      <path d="M10 7.5C10.5523 7.50002 11 7.94773 11 8.5C11 9.05227 10.5523 9.49998 10 9.5C9.44774 9.5 9.00002 9.05229 9.00002 8.5C9.00002 7.94771 9.44774 7.5 10 7.5Z" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 3C10.9 3.00001 11.8867 3.40305 12.418 4.31738L17.6846 13.3828C18.1799 14.2357 18.0574 15.1805 17.5567 15.8779C17.0646 16.5631 16.2248 16.9999 15.2666 17H4.73342C3.77521 17 2.93449 16.5632 2.44241 15.8779C1.94186 15.1806 1.82023 14.2356 2.31545 13.3828L7.58205 4.31738C8.11331 3.40304 9.10002 3 10 3ZM10 4.64648C9.54341 4.64648 9.17278 4.85011 9.00002 5.14746L3.73342 14.2119C3.59414 14.4519 3.61746 14.6963 3.77444 14.915C3.94044 15.146 4.27182 15.3535 4.73342 15.3535H15.2666C15.7282 15.3534 16.0596 15.146 16.2256 14.915C16.3826 14.6963 16.4059 14.4518 16.2666 14.2119L11 5.14746C10.8273 4.85012 10.4566 4.6465 10 4.64648Z"
+      />
     </IconSvg>
   );
 }
@@ -151,9 +196,13 @@ export function AlertWarningIcon(props: IconProps) {
 export function AlertInfoIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <circle cx={10} cy={10} r={7} />
-      <circle cx={10} cy={7} r={0.75} fill="currentColor" stroke="none" />
-      <line x1={10} y1={9.5} x2={10} y2={13.5} />
+      <path d="M11 6.5C11 5.94771 10.5523 5.5 10 5.5C9.44772 5.5 9 5.94771 9 6.5C9 7.05229 9.44772 7.5 10 7.5C10.5523 7.5 11 7.05229 11 6.5Z" />
+      <path d="M10.75 13.75C10.75 14.1642 10.4142 14.5 10 14.5C9.5858 14.5 9.25001 14.1642 9.25 13.75L9.24994 9.25001C9.24993 8.8358 9.58572 8.50001 9.99993 8.5C10.4141 8.49999 10.7499 8.83578 10.7499 9.24999L10.75 13.75Z" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 3C13.866 3 17 6.13401 17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3ZM10 4.5C13.0376 4.5 15.5 6.96243 15.5 10C15.5 13.0376 13.0376 15.5 10 15.5C6.96243 15.5 4.5 13.0376 4.5 10C4.5 6.96243 6.96243 4.5 10 4.5Z"
+      />
     </IconSvg>
   );
 }
@@ -161,9 +210,17 @@ export function AlertInfoIcon(props: IconProps) {
 export function AlertQuestionIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <circle cx={10} cy={10} r={7} />
-      <path d="M7.8 8.2a2.2 2.2 0 1 1 3.3 1.9c-.7.4-1.1.8-1.1 1.6" />
-      <circle cx={10} cy={14} r={0.75} fill="currentColor" stroke="none" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 7.25C9.30964 7.25 8.75 7.80964 8.75 8.5C8.75 8.91421 8.41421 9.25 8 9.25C7.58579 9.25 7.25 8.91421 7.25 8.5C7.25 6.98122 8.48122 5.75 10 5.75C11.5188 5.75 12.75 6.98122 12.75 8.5C12.75 9.66431 12.0267 10.6579 11.0077 11.0593C10.905 11.0997 10.8259 11.1569 10.7816 11.2066C10.7596 11.2312 10.7522 11.2463 10.75 11.2526C10.7486 11.6656 10.4133 12 10 12C9.58579 12 9.25 11.6642 9.25 11.25C9.25 10.3853 9.94646 9.86517 10.4579 9.6637C10.923 9.48047 11.25 9.02751 11.25 8.5C11.25 7.80964 10.6904 7.25 10 7.25Z"
+      />
+      <path d="M10 14.5C10.5523 14.5 11 14.0523 11 13.5C11 12.9477 10.5523 12.5 10 12.5C9.44772 12.5 9 12.9477 9 13.5C9 14.0523 9.44772 14.5 10 14.5Z" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17ZM10 15.5C13.0376 15.5 15.5 13.0376 15.5 10C15.5 6.96243 13.0376 4.5 10 4.5C6.96243 4.5 4.5 6.96243 4.5 10C4.5 13.0376 6.96243 15.5 10 15.5Z"
+      />
     </IconSvg>
   );
 }
@@ -171,8 +228,11 @@ export function AlertQuestionIcon(props: IconProps) {
 export function EditIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <path d="M4 16l.9-3.6 7.5-7.5a1.5 1.5 0 0 1 2.1 0l.6.6a1.5 1.5 0 0 1 0 2.1L7.6 15.1 4 16z" />
-      <path d="M11 6.5l2.5 2.5" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M15.7074 4.29258C14.6506 3.2358 12.9372 3.23581 11.8804 4.29261L11.2793 4.89367L11.2705 4.88488L10.2053 5.95007L10.2141 5.95887L4.30888 11.8642C3.79096 12.3821 3.5 13.0846 3.5 13.817V15.7468C3.5 15.9466 3.57936 16.1381 3.72061 16.2794C3.86187 16.4206 4.05345 16.5 4.25321 16.5L6.183 16.5C6.91549 16.5 7.61797 16.209 8.13591 15.6911L15.7074 8.11945C16.7642 7.06268 16.7642 5.34934 15.7074 4.29258ZM11.2794 7.02406L5.3741 12.9294C5.13868 13.1648 5.00643 13.4841 5.00643 13.817L5.00643 14.9936H6.183C6.51595 14.9936 6.83526 14.8613 7.07068 14.6259L12.9759 8.7206L11.2794 7.02406ZM14.0411 7.6554L14.6422 7.05429C15.1107 6.5858 15.1107 5.82624 14.6422 5.35776C14.1737 4.88927 13.4141 4.88928 12.9456 5.35777L12.3445 5.95886L14.0411 7.6554Z"
+      />
     </IconSvg>
   );
 }
@@ -180,10 +240,13 @@ export function EditIcon(props: IconProps) {
 export function TrashIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <path d="M3.7 6.5h12.6" />
-      <path d="M5.2 6.5v9a1 1 0 0 0 1 1h7.6a1 1 0 0 0 1-1v-9" />
-      <path d="M7.5 6.5V4.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" />
-      <path d="M8.3 9.5v5M11.7 9.5v5" />
+      <path d="M11.4483 8.55172C11.8483 8.55172 12.1725 8.87593 12.1725 9.27586V13.3793C12.1725 13.7792 11.8483 14.1034 11.4483 14.1034C11.0484 14.1034 10.7242 13.7792 10.7242 13.3793V9.27586C10.7242 8.87593 11.0484 8.55172 11.4483 8.55172Z" />
+      <path d="M9.27591 9.27586C9.27591 8.87593 8.9517 8.55172 8.55177 8.55172C8.15184 8.55172 7.82763 8.87593 7.82763 9.27586V13.3793C7.82763 13.7792 8.15184 14.1034 8.55177 14.1034C8.9517 14.1034 9.27591 13.7792 9.27591 13.3793V9.27586Z" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.34481 5.65517C7.34481 4.18876 8.53357 3 9.99999 3C11.4664 3 12.6552 4.18876 12.6552 5.65517H15.5518C15.9517 5.65517 16.2759 5.97938 16.2759 6.37931C16.2759 6.77924 15.9517 7.10345 15.5518 7.10345H14.8275L14.8274 12.3656C14.8274 13.9878 14.8274 14.7989 14.5117 15.4185C14.234 15.9635 13.7908 16.4066 13.2458 16.6843C12.6262 17 11.8151 17 10.1929 17H9.80693C8.18466 17 7.37353 17 6.75391 16.6843C6.20888 16.4066 5.76575 15.9635 5.48805 15.4184C5.17235 14.7988 5.17237 13.9877 5.1724 12.3654L5.17251 7.10345H4.44832C4.04839 7.10345 3.72418 6.77924 3.72418 6.37931C3.72418 5.97938 4.04839 5.65517 4.44832 5.65517H7.34481ZM8.79309 5.65517C8.79309 4.98862 9.33344 4.44828 9.99999 4.44828C10.6665 4.44828 11.2069 4.98862 11.2069 5.65517H8.79309ZM6.6208 7.10345H13.3793L13.3791 12.3656C13.3791 13.2006 13.378 13.7397 13.3445 14.1501C13.3123 14.5435 13.2577 14.6894 13.2212 14.761C13.0824 15.0335 12.8608 15.255 12.5883 15.3939C12.5167 15.4304 12.3708 15.4849 11.9774 15.5171C11.5671 15.5506 11.0279 15.5517 10.1929 15.5517H9.80693C8.9719 15.5517 8.43273 15.5506 8.02236 15.5171C7.62891 15.4849 7.48304 15.4304 7.41143 15.3939C7.13891 15.255 6.91735 15.0334 6.7785 14.7609C6.74201 14.6893 6.68745 14.5435 6.65531 14.15C6.62179 13.7396 6.62067 13.2005 6.62069 12.3655L6.6208 7.10345Z"
+      />
     </IconSvg>
   );
 }
@@ -191,20 +254,27 @@ export function TrashIcon(props: IconProps) {
 export function SearchIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <circle cx={8.7} cy={8.7} r={5} />
-      <path d="M12.5 12.5l3.5 3.5" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M13.3245 14.4559L15.6343 16.7657C15.9467 17.0781 16.4533 17.0781 16.7657 16.7657C17.0781 16.4533 17.0781 15.9467 16.7657 15.6343L14.4559 13.3245C15.2983 12.2408 15.8 10.879 15.8 9.4C15.8 5.86538 12.9346 3 9.4 3C5.86538 3 3 5.86538 3 9.4C3 12.9346 5.86538 15.8 9.4 15.8C10.879 15.8 12.2408 15.2983 13.3245 14.4559ZM9.4 14.2C6.74903 14.2 4.6 12.051 4.6 9.4C4.6 6.74903 6.74903 4.6 9.4 4.6C12.051 4.6 14.2 6.74903 14.2 9.4C14.2 12.051 12.051 14.2 9.4 14.2Z"
+      />
     </IconSvg>
   );
 }
 
 /**
  * Generic fallback icon (--knky-icon-placeholder in Figma), used inside other
- * components when no specific icon has been set yet.
+ * components when no specific icon has been set yet. Four small diamonds arranged
+ * in a pinwheel pattern.
  */
 export function PlaceholderIcon(props: IconProps) {
   return (
     <IconSvg {...props}>
-      <path d="M10 3l7 7-7 7-7-7z" fill="currentColor" stroke="none" />
+      <path d="M10 3L13.2083 6.20833L10 9.41667L6.79166 6.20833L10 3Z" />
+      <path d="M6.20834 6.79167L9.41667 10L6.20834 13.2083L3 10L6.20834 6.79167Z" />
+      <path d="M13.7917 6.79167L17 10L13.7917 13.2083L10.5833 10L13.7917 6.79167Z" />
+      <path d="M10 10.5833L13.2083 13.7917L10 17L6.79166 13.7917L10 10.5833Z" />
     </IconSvg>
   );
 }

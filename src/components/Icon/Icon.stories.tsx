@@ -23,7 +23,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          "Icon set from the KNKY - DS Figma file (page 'Icons'). 20x20 box, 16x16 safe content area, color follows CSS `currentColor`. Design source: Figma node 16:286.",
+          "Icon set from the KNKY - DS Figma file (page 'Icons'). 20x20 box, 16x16 safe content area. Color defaults to the design system's icon tokens via the `tone` prop (\"default\" | \"active\" | \"disabled\" -> --knky-color-icon-default/active/disabled), or pass any CSS color via `color`. Design source: Figma node 16:286.",
       },
     },
   },
@@ -100,12 +100,32 @@ export const Sizes: Story = {
   ),
 };
 
-export const CustomColor: Story = {
+export const Tones: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: 12, color: "var(--knky-color-brand-500, #ac1991)" }}>
-      <CheckIcon />
-      <AlertErrorIcon />
-      <TrashIcon />
+    <div style={{ display: "flex", gap: 24 }}>
+      <Cell label='tone="default"'><CheckIcon tone="default" /></Cell>
+      <Cell label='tone="active"'><CheckIcon tone="active" /></Cell>
+      <Cell label='tone="disabled"'><CheckIcon tone="disabled" /></Cell>
+    </div>
+  ),
+};
+
+export const CustomColor: Story = {
+  name: "Custom color (status colors)",
+  render: () => (
+    <div style={{ display: "flex", gap: 12 }}>
+      <Cell label="critical">
+        <AlertErrorIcon color="var(--knky-color-status-critical-element)" />
+      </Cell>
+      <Cell label="caution">
+        <AlertWarningIcon color="var(--knky-color-status-caution-element)" />
+      </Cell>
+      <Cell label="success">
+        <CheckIcon color="var(--knky-color-status-success-element)" />
+      </Cell>
+      <Cell label="brand">
+        <TrashIcon color="var(--knky-color-brand-500)" />
+      </Cell>
     </div>
   ),
 };
