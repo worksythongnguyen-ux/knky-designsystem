@@ -1,34 +1,252 @@
 /**
  * Design tokens pulled from Figma Variables in the "KNKY - DS" file.
- * This is the single source of truth for colors, spacing, radius, etc.
- * When adding new components, reuse these tokens instead of hardcoding raw colors.
+ * This is the single source of truth for colors, spacing, radius, typography, etc.
+ * When adding new components, reuse these tokens instead of hardcoding raw values.
+ *
+ * Source (Figma pages): Colors, Space, Radius, Typography.
+ * Naming: --knky-<category>-<name>. Semantic tokens reference primitive tokens via var(...).
  */
 
 :root {
-  /* --- Colors --- */
+  /* ==========================================================================
+     COLORS — Primitive palette (Figma "Colors" page, Level 1: Primitive Colors)
+     ========================================================================== */
+
+  --knky-color-neutral-50: #f8f8f8;
+  --knky-color-neutral-100: #f1f1f1;
+  --knky-color-neutral-200: #e5e5e5;
+  --knky-color-neutral-300: #d4d4d4;
+  --knky-color-neutral-400: #b5b5b5;
+  --knky-color-neutral-500: #8a8a8a;
+  --knky-color-neutral-600: #6d6d6d;
+  --knky-color-neutral-700: #525252;
+  --knky-color-neutral-800: #303030;
+  --knky-color-neutral-900: #1a1a1a;
   --knky-color-neutral-white: #ffffff;
+  --knky-color-neutral-black: #000000;
 
-  /* Main brand gradient (used on the primary Button) */
-  --knky-color-brand-gradient-start: #cb36b0;
-  --knky-color-brand-gradient-mid: #ac1991;
-  --knky-color-brand-gradient-end: #7d0b68;
+  --knky-color-brand-50: #ffe8fb;
+  --knky-color-brand-100: #ffbff4;
+  --knky-color-brand-200: #fb91e8;
+  --knky-color-brand-300: #e75ecf;
+  --knky-color-brand-400: #cb36b0;
+  --knky-color-brand-500: #ac1991;
+  --knky-color-brand-600: #960f7e;
+  --knky-color-brand-700: #7d0b68;
+  --knky-color-brand-800: #680856;
+  --knky-color-brand-900: #530244;
 
-  /* Button border */
-  --knky-color-brand-border: #530244;
-  --knky-color-brand-border-soft: #7d0b68;
+  --knky-color-red-50: #fee9e8;
+  --knky-color-red-100: #f5bfc9;
+  --knky-color-red-200: #ef94a6;
+  --knky-color-red-300: #e86982;
+  --knky-color-red-400: #e34967;
+  --knky-color-red-500: #de294c;
+  --knky-color-red-600: #ce1f3f;
+  --knky-color-red-700: #ba1530;
+  --knky-color-red-800: #a6152a;
+  --knky-color-red-900: #640711;
 
-  /* --- Spacing --- */
+  --knky-color-blue-50: #e7f1fc;
+  --knky-color-blue-100: #cfe4f8;
+  --knky-color-blue-200: #b7d6f5;
+  --knky-color-blue-300: #6fadeb;
+  --knky-color-blue-400: #3f91e5;
+  --knky-color-blue-500: #0f76de;
+  --knky-color-blue-600: #0e6ac8;
+  --knky-color-blue-700: #0c5eb2;
+  --knky-color-blue-800: #0b539b;
+  --knky-color-blue-900: #094785;
+
+  --knky-color-green-50: #e7f9e9;
+  --knky-color-green-100: #c3f1c8;
+  --knky-color-green-200: #9be8a3;
+  --knky-color-green-300: #73de7e;
+  --knky-color-green-400: #55d762;
+  --knky-color-green-500: #37d046;
+  --knky-color-green-600: #1fb42d;
+  --knky-color-green-700: #16a220;
+  --knky-color-green-800: #06730e;
+  --knky-color-green-900: #005605;
+
+  --knky-color-pink-50: #fff0f8;
+  --knky-color-pink-100: #ffdaed;
+  --knky-color-pink-200: #ffc2e1;
+  --knky-color-pink-300: #ffaad4;
+  --knky-color-pink-400: #ff97cb;
+  --knky-color-pink-500: #ff85c2;
+  --knky-color-pink-600: #f662a3;
+  --knky-color-pink-700: #e6468c;
+  --knky-color-pink-800: #d33077;
+  --knky-color-pink-900: #b81d60;
+
+  --knky-color-yellow-50: #fffae0;
+  --knky-color-yellow-100: #fff3b3;
+  --knky-color-yellow-200: #ffeb80;
+  --knky-color-yellow-300: #ffe34d;
+  --knky-color-yellow-400: #ffdd26;
+  --knky-color-yellow-500: #ffd700;
+  --knky-color-yellow-600: #ecc700;
+  --knky-color-yellow-700: #d8b600;
+  --knky-color-yellow-800: #c5a600;
+  --knky-color-yellow-900: #897300;
+
+  --knky-color-orange-50: #ffece4;
+  --knky-color-orange-100: #fddcd0;
+  --knky-color-orange-200: #fcc4b1;
+  --knky-color-orange-300: #faac91;
+  --knky-color-orange-400: #f99b7a;
+  --knky-color-orange-500: #f88962;
+  --knky-color-orange-600: #f17346;
+  --knky-color-orange-700: #e15b2b;
+  --knky-color-orange-800: #d44b1a;
+  --knky-color-orange-900: #932600;
+
+  /* ==========================================================================
+     COLORS — Semantic tokens, light mode
+     (Figma "Colors" page, Level 2: Token Colors & Mode Mapping)
+     ========================================================================== */
+
+  --knky-color-text-primary: var(--knky-color-neutral-800);
+  --knky-color-text-secondary: var(--knky-color-neutral-600);
+  --knky-color-text-disabled: var(--knky-color-neutral-400);
+
+  --knky-color-bg-page: var(--knky-color-neutral-100);
+  --knky-color-bg-surface: var(--knky-color-neutral-white);
+  --knky-color-bg-surface-zebra: var(--knky-color-neutral-50);
+  --knky-color-bg-hover: var(--knky-color-neutral-200);
+  --knky-color-bg-disabled: var(--knky-color-neutral-300);
+
+  --knky-color-border: var(--knky-color-neutral-200);
+  --knky-color-border-hover: var(--knky-color-neutral-500);
+
+  --knky-color-status-success-bg: var(--knky-color-green-100);
+  --knky-color-status-success-element: var(--knky-color-green-700);
+  --knky-color-status-critical-bg: var(--knky-color-red-100);
+  --knky-color-status-critical-element: var(--knky-color-red-700);
+  --knky-color-status-caution-bg: var(--knky-color-yellow-100);
+  --knky-color-status-caution-element: var(--knky-color-yellow-700);
+
+  --knky-color-link: var(--knky-color-blue-400);
+  --knky-color-link-hover: var(--knky-color-blue-600);
+  --knky-color-link-active: var(--knky-color-blue-800);
+
+  --knky-color-brand-default: var(--knky-color-brand-500);
+  --knky-color-brand-hover: var(--knky-color-brand-700);
+
+  --knky-color-icon-default: var(--knky-color-neutral-700);
+  --knky-color-icon-active: var(--knky-color-neutral-900);
+  --knky-color-icon-disabled: var(--knky-color-neutral-400);
+
+  /* --- Kept for backward compatibility with the Button component ---
+     These map 1:1 to the primitive brand scale above; safe to migrate
+     call sites to the primitive tokens directly in a future cleanup. */
+  --knky-color-brand-gradient-start: var(--knky-color-brand-400); /* #cb36b0 */
+  --knky-color-brand-gradient-mid: var(--knky-color-brand-500); /* #ac1991 */
+  --knky-color-brand-gradient-end: var(--knky-color-brand-700); /* #7d0b68 */
+  --knky-color-brand-border: var(--knky-color-brand-900); /* #530244 */
+  --knky-color-brand-border-soft: var(--knky-color-brand-700); /* #7d0b68 */
+
+  /* ==========================================================================
+     SPACING (Figma "Space" page)
+     ========================================================================== */
+
   --knky-space-0: 0px;
+  --knky-space-1: 1px;
+  --knky-space-2: 2px;
+  --knky-space-4: 4px;
   --knky-space-6: 6px;
   --knky-space-8: 8px;
+  --knky-space-12: 12px;
+  --knky-space-16: 16px;
+  --knky-space-20: 20px;
+  --knky-space-24: 24px;
+  --knky-space-32: 32px;
+  --knky-space-40: 40px;
+  --knky-space-48: 48px;
+  --knky-space-64: 64px;
 
-  /* --- Radius --- */
+  /* ==========================================================================
+     RADIUS (Figma "Radius" page)
+     ========================================================================== */
+
   --knky-radius-none: 0px;
   --knky-radius-sm: 4px;
+  --knky-radius-md: 8px;
+  --knky-radius-lg: 12px;
+  --knky-radius-xl: 16px;
+  --knky-radius-2xl: 24px;
+  --knky-radius-full: 9999px;
 
-  /* --- Typography --- */
-  --knky-font-family-heading: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ==========================================================================
+     TYPOGRAPHY (Figma "Typography" page)
+     ========================================================================== */
+
+  --knky-font-family-base: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Kept for backward compatibility with the Button component. */
+  --knky-font-family-heading: var(--knky-font-family-base);
+
+  --knky-font-weight-regular: 400;
+  --knky-font-weight-medium: 500;
   --knky-font-weight-semibold: 600;
+  --knky-font-weight-bold: 700;
+
+  /* Body variants */
+  --knky-body-xs-size: 12px;
+  --knky-body-xs-line-height: 16px;
+  --knky-body-xs-weight: var(--knky-font-weight-regular);
+
+  --knky-body-sm-size: 13px;
+  --knky-body-sm-line-height: 20px;
+  --knky-body-sm-weight: var(--knky-font-weight-regular);
+
+  --knky-body-md-size: 13px;
+  --knky-body-md-line-height: 20px;
+  --knky-body-md-weight: var(--knky-font-weight-semibold);
+
+  --knky-body-lg-size: 14px;
+  --knky-body-lg-line-height: 20px;
+  --knky-body-lg-weight: var(--knky-font-weight-regular);
+
+  --knky-body-mg-size: 14px;
+  --knky-body-mg-line-height: 20px;
+  --knky-body-mg-weight: var(--knky-font-weight-semibold);
+
+  /* Input (mobile) */
+  --knky-input-mobile-size: 16px;
+  --knky-input-mobile-line-height: 24px;
+  --knky-input-mobile-weight: var(--knky-font-weight-medium);
+
+  /* Heading variants */
   --knky-heading-xs-size: 12px;
   --knky-heading-xs-line-height: 16px;
+  --knky-heading-xs-weight: var(--knky-font-weight-semibold);
+
+  --knky-heading-sm-size: 13px;
+  --knky-heading-sm-line-height: 20px;
+  --knky-heading-sm-weight: var(--knky-font-weight-semibold);
+
+  --knky-heading-md-size: 14px;
+  --knky-heading-md-line-height: 20px;
+  --knky-heading-md-weight: var(--knky-font-weight-semibold);
+
+  --knky-heading-lg-size: 16px;
+  --knky-heading-lg-line-height: 24px;
+  --knky-heading-lg-weight: var(--knky-font-weight-semibold);
+
+  --knky-heading-mg-size: 18px;
+  --knky-heading-mg-line-height: 28px;
+  --knky-heading-mg-weight: var(--knky-font-weight-semibold);
+
+  --knky-heading-xl-size: 24px;
+  --knky-heading-xl-line-height: 36px;
+  --knky-heading-xl-weight: var(--knky-font-weight-bold);
+
+  --knky-heading-2xl-size: 30px;
+  --knky-heading-2xl-line-height: 40px;
+  --knky-heading-2xl-weight: var(--knky-font-weight-bold);
+
+  --knky-heading-3xl-size: 36px;
+  --knky-heading-3xl-line-height: 48px;
+  --knky-heading-3xl-weight: var(--knky-font-weight-bold);
 }
