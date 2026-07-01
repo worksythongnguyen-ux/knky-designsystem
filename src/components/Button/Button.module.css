@@ -1,0 +1,61 @@
+/* Styles for Button - matches the "button - primary" design in Figma */
+
+.button {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--knky-font-family-heading);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--knky-space-0);
+  padding: var(--knky-space-6) var(--knky-space-8);
+  border-radius: var(--knky-radius-sm);
+  position: relative;
+
+  color: var(--knky-color-neutral-white);
+  font-size: var(--knky-heading-xs-size);
+  line-height: var(--knky-heading-xs-line-height);
+  font-weight: var(--knky-font-weight-semibold);
+  white-space: nowrap;
+
+  background: linear-gradient(
+    to bottom,
+    var(--knky-color-brand-gradient-start) 0%,
+    var(--knky-color-brand-gradient-mid) 20%,
+    var(--knky-color-brand-gradient-end) 80.556%
+  );
+
+  border: 2px solid var(--knky-color-brand-border);
+
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+
+/* Soft outer border, matching the two-layer border effect in the Figma design */
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--knky-radius-sm);
+  border: 1px solid var(--knky-color-brand-border-soft);
+  pointer-events: none;
+}
+
+.button:hover:not(.disabled) {
+  filter: brightness(1.08);
+}
+
+.button:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Full width - use when the button should fill its container */
+.fullWidth {
+  width: 100%;
+}

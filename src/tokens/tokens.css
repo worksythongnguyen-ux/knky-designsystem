@@ -1,0 +1,34 @@
+/**
+ * Design tokens pulled from Figma Variables in the "KNKY - DS" file.
+ * This is the single source of truth for colors, spacing, radius, etc.
+ * When adding new components, reuse these tokens instead of hardcoding raw colors.
+ */
+
+:root {
+  /* --- Colors --- */
+  --knky-color-neutral-white: #ffffff;
+
+  /* Main brand gradient (used on the primary Button) */
+  --knky-color-brand-gradient-start: #cb36b0;
+  --knky-color-brand-gradient-mid: #ac1991;
+  --knky-color-brand-gradient-end: #7d0b68;
+
+  /* Button border */
+  --knky-color-brand-border: #530244;
+  --knky-color-brand-border-soft: #7d0b68;
+
+  /* --- Spacing --- */
+  --knky-space-0: 0px;
+  --knky-space-6: 6px;
+  --knky-space-8: 8px;
+
+  /* --- Radius --- */
+  --knky-radius-none: 0px;
+  --knky-radius-sm: 4px;
+
+  /* --- Typography --- */
+  --knky-font-family-heading: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  --knky-font-weight-semibold: 600;
+  --knky-heading-xs-size: 12px;
+  --knky-heading-xs-line-height: 16px;
+}

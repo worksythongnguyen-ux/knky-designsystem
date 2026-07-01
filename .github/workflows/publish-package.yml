@@ -1,0 +1,39 @@
+name: Publish package
+
+# Runs every time a new version tag is pushed, e.g. v0.2.0
+# How to trigger: git tag v0.2.0 && git push origin v0.2.0
+# Devs then just run "npm update" to get the new version - no copy-pasting code.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # point npm to GitHub Packages instead of the public registry
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@worksythongnguyen-ux"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
