@@ -115,6 +115,9 @@
   --knky-color-bg-surface: var(--knky-color-neutral-white);
   --knky-color-bg-surface-zebra: var(--knky-color-neutral-50);
   --knky-color-bg-hover: var(--knky-color-neutral-200);
+  /* Hover fill for white surfaces (Secondary/Tertiary button hover), confirmed via
+     the Button components' Figma var --color/bg/surface-hover. */
+  --knky-color-bg-surface-hover: var(--knky-color-neutral-100);
   --knky-color-bg-disabled: var(--knky-color-neutral-300);
   /* Distinct from bg-disabled above: used for disabled/read-only form field backgrounds
      (confirmed via the Input text component, Figma var --color/bg/surface-disabled). */

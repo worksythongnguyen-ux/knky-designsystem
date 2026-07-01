@@ -41,6 +41,7 @@
 }
 
 .action {
+  position: relative;
   flex-shrink: 0;
   font-family: var(--knky-font-family-base);
   font-size: var(--knky-body-md-size);
@@ -62,6 +63,21 @@
 }
 .action:active {
   color: var(--knky-color-link-active);
+}
+/* Corrected against the "Link" component's Dev Mode code (node 31:1689): keyboard
+   focus isn't just a color change like hover — it shows a focus ring (border-2,
+   inset -3px top/bottom, -8px left/right, radius-md), same text color as hover. */
+.action:focus-visible {
+  color: var(--knky-color-link-hover);
+  outline: none;
+}
+.action:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px -8px;
+  border: 2px solid var(--knky-color-link);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
 }
 
 .helpText {
@@ -105,8 +121,27 @@
 .large .affix {
   padding: var(--knky-space-6);
 }
+/* Corrected against the Assets/Prefix + Assets/Suffix Dev Mode code: the small
+   screen size uses 6px horizontal / 8px vertical, not a uniform 8px. */
 .small .affix {
-  padding: var(--knky-space-8);
+  padding: var(--knky-space-8) var(--knky-space-6);
+}
+
+/* Text-content affix (e.g. currency prefix "$", unit suffix "cm") — matches the
+   Assets/Prefix + Assets/Suffix "Text" variant: bodyMg (14/20/Semibold), secondary
+   text color, right-aligned, no wrap. Only applied when the prefix/suffix is a
+   plain string/number; icon elements render as-is inside .affix. */
+.affixLabel {
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-mg-size);
+  line-height: var(--knky-body-mg-line-height);
+  font-weight: var(--knky-body-mg-weight);
+  color: var(--knky-color-text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+.box:has(.input:disabled) .affixLabel {
+  color: var(--knky-color-text-disabled);
 }
 
 .input {
@@ -223,6 +258,12 @@
 }
 .alertText.errorText {
   color: var(--knky-color-status-critical-element);
+}
+.alertText.warningText {
+  color: var(--knky-color-status-caution-element);
+}
+.alertText.successText {
+  color: var(--knky-color-status-success-element);
 }
 
 .alertIcon {

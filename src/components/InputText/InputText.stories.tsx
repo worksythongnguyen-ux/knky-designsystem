@@ -85,6 +85,36 @@ export const NoAffixes: Story = {
   },
 };
 
+export const TextAffixes: Story = {
+  name: "Text prefix/suffix ($, cm)",
+  args: {
+    label: "Price",
+    helpText: "Help text",
+    placeholder: "0",
+    prefix: "$",
+    suffix: "cm",
+    infoText: "Info line",
+  },
+};
+
+export const WarningState: Story = {
+  name: "Warning",
+  args: {
+    ...Default.args,
+    defaultValue: "Some text",
+    warningText: "Warning line",
+  },
+};
+
+export const SuccessState: Story = {
+  name: "Success (correct info)",
+  args: {
+    ...Default.args,
+    defaultValue: "Some text",
+    successText: "Correct info line",
+  },
+};
+
 export const Controlled: Story = {
   render: () => {
     function ControlledExample() {

@@ -1,0 +1,194 @@
+/* Styles for Button - matches the 4 Figma button components:
+   button - primary   (75:11225)
+   button - secondary (24:1846)
+   button - tertiary  (53:4793)
+   button - critical  (28:1308, "Primary" sub-type — the solid/filled destructive
+                        button. Critical also has an outlined "Secondary" sub-type
+                        in Figma that isn't implemented here yet.)
+
+   hover/pressed/focus/disabled map to native CSS states (:hover, :active,
+   :focus-visible, :disabled) — only `loading` needs a prop, since it swaps the
+   button's content for a spinner rather than being a pure visual state. */
+
+.button {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--knky-space-2);
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: var(--knky-radius-sm);
+  font-family: var(--knky-font-family-base);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Shared focus ring — confirmed the same link/hover blue across every variant
+   (Primary/Tertiary/Critical use inset -3px; Secondary uses -4px, see below). */
+.button:focus-visible {
+  outline: none;
+}
+.button:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-link-hover);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Sizes — Figma calls these "screenSize" Tiny / Large / Small. Note the
+   confusing scale: Tiny (28px) < Large (36px) < Small (40px) tall. Padding is
+   shared between Large and Small (only the type scale/line-height differs).
+   ========================================================================== */
+
+.tiny {
+  padding: var(--knky-space-6) var(--knky-space-8);
+  font-size: var(--knky-heading-xs-size);
+  line-height: var(--knky-heading-xs-line-height);
+  font-weight: var(--knky-heading-xs-weight);
+}
+.large {
+  padding: var(--knky-space-8) var(--knky-space-12);
+  font-size: var(--knky-heading-sm-size);
+  line-height: var(--knky-heading-sm-line-height);
+  font-weight: var(--knky-heading-sm-weight);
+}
+.small {
+  padding: var(--knky-space-8) var(--knky-space-12);
+  font-size: var(--knky-heading-lg-size);
+  line-height: var(--knky-heading-lg-line-height);
+  font-weight: var(--knky-heading-lg-weight);
+}
+
+/* Icon + text: left padding shrinks to match the size's vertical padding
+   (icon has its own visual weight), right padding stays the horizontal value.
+   Confirmed exactly for Large; Tiny/Small follow the same formula. */
+.tiny.hasIcon {
+  padding: var(--knky-space-6) var(--knky-space-8) var(--knky-space-6) var(--knky-space-6);
+}
+.large.hasIcon,
+.small.hasIcon {
+  padding: var(--knky-space-8) var(--knky-space-12) var(--knky-space-8) var(--knky-space-8);
+}
+
+/* Icon-only: square button. Large confirmed p-8 (36x36). Small confirmed via
+   Figma's nested "Body" wrapper (8px outer + 2px inner = 10px, 40x40). Tiny is
+   inferred from the same (size - 20px icon) / 2 formula, not directly confirmed. */
+.tiny.iconOnly {
+  padding: var(--knky-space-4);
+}
+.large.iconOnly {
+  padding: var(--knky-space-8);
+}
+.small.iconOnly {
+  padding: calc(var(--knky-space-8) + var(--knky-space-2));
+}
+
+/* ==========================================================================
+   Primary — solid brand fill
+   ========================================================================== */
+
+.primary {
+  background-color: var(--knky-color-brand-default);
+  color: var(--knky-color-neutral-white);
+}
+.primary:hover:not(:disabled),
+.primary:active:not(:disabled) {
+  background-color: var(--knky-color-brand-hover);
+}
+.primary:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  color: var(--knky-color-text-disabled);
+}
+
+/* ==========================================================================
+   Secondary — white fill, bordered
+   ========================================================================== */
+
+.secondary {
+  background-color: var(--knky-color-bg-surface);
+  border-color: var(--knky-color-border);
+  color: var(--knky-color-text-primary);
+  /* Literal shelf shadow copied from Figma Dev Mode — no elevation token exists
+     for this yet in tokens.css. */
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+.secondary:hover:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+}
+.secondary:active:not(:disabled) {
+  /* Literal color from Figma Dev Mode (#ccc) — not mapped to any token there. */
+  background-color: #cccccc;
+  box-shadow:
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.25),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+.secondary:focus-visible::after {
+  /* Secondary's focus ring is inset -4px in Figma, not -3px like the others. */
+  inset: -4px;
+}
+.secondary:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  color: var(--knky-color-text-disabled);
+  box-shadow: none;
+}
+/* Loading keeps the shelf shadow (confirmed in Figma), unlike plain Disabled. */
+.secondary.loading:disabled {
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   Tertiary — plain/ghost, no fill or border by default
+   ========================================================================== */
+
+.tertiary {
+  background-color: transparent;
+  color: var(--knky-color-text-primary);
+}
+.tertiary:hover:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+}
+.tertiary:active:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+}
+.tertiary:focus-visible {
+  /* Figma: Tertiary's focus state turns the background white instead of staying
+     transparent, in addition to showing the ring. */
+  background-color: var(--knky-color-bg-surface);
+}
+.tertiary:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  color: var(--knky-color-text-disabled);
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Critical — solid destructive fill (Figma "Critical / Primary" sub-type)
+   ========================================================================== */
+
+.critical {
+  background-color: var(--knky-color-status-critical-element);
+  color: var(--knky-color-neutral-white);
+}
+.critical:hover:not(:disabled),
+.critical:active:not(:disabled) {
+  /* Figma darkens via a 20% black overlay rather than a separate hover token. */
+  background-color: var(--knky-color-status-critical-element);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+}
+.critical:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  background-image: none;
+  color: var(--knky-color-text-disabled);
+}

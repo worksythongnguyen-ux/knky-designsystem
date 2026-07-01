@@ -31,3 +31,6 @@ export type {
 
 export { InputText } from "./components/InputText";
 export type { InputTextProps, InputTextAction } from "./components/InputText";
+
+export { Button } from "./components/Button";
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button";

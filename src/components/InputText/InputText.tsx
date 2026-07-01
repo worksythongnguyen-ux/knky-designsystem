@@ -8,7 +8,13 @@ import {
   type ReactNode,
 } from "react";
 import styles from "./InputText.module.css";
-import { AlertErrorIcon, AlertInfoIcon, type IconTone } from "../Icon";
+import {
+  AlertErrorIcon,
+  AlertInfoIcon,
+  AlertWarningIcon,
+  CheckIcon,
+  type IconTone,
+} from "../Icon";
 
 /**
  * Prefix/suffix icons switch to the "disabled" icon tone when the field is disabled
@@ -21,6 +27,18 @@ function withAffixTone(node: ReactNode, tone: IconTone): ReactNode {
   // <span>/<svg> etc. with `tone` would leak it onto the DOM as an invalid attribute.
   if (isValidElement(node) && typeof node.type !== "string") {
     return cloneElement(node as ReactElement<{ tone?: IconTone }>, { tone });
+  }
+  return node;
+}
+
+/**
+ * Prefix/suffix also support a plain text value (Figma "Assets/Prefix" / "Assets/Suffix"
+ * — Text variant, e.g. a "$" currency prefix or "cm" unit suffix): bodyMg/Semibold,
+ * secondary color, right-aligned. Icon elements are left untouched.
+ */
+function renderAffixContent(node: ReactNode): ReactNode {
+  if (typeof node === "string" || typeof node === "number") {
+    return <span className={styles.affixLabel}>{node}</span>;
   }
   return node;
 }
@@ -46,13 +64,24 @@ export interface InputTextProps
   /** Icon or element shown at the end of the input. */
   suffix?: ReactNode;
   /**
-   * Text shown below the input with an info icon. Ignored when `error` is set — the
-   * error message takes over that space instead.
+   * Text shown below the input with an info icon. This is the default/lowest-priority
+   * alert line message — overridden by `warningText`, `successText`, then `error`.
    */
   infoText?: ReactNode;
   /**
+   * Warning message (Figma AlertLine "warning" state) — yellow caution icon/text.
+   * Overridden by `error` when both are set.
+   */
+  warningText?: ReactNode;
+  /**
+   * Success / "correct info" message (Figma AlertLine "correct info" state) — green
+   * check icon/text. Overridden by `warningText` or `error` when set.
+   */
+  successText?: ReactNode;
+  /**
    * Error message. Truthy value switches the field into its error visual state
-   * (red border/background) and replaces `infoText` with this message + an error icon.
+   * (red border/background) and takes over the alert line with this message + an
+   * error icon — the highest-priority of the four alert line states.
    */
   error?: ReactNode;
   /**
@@ -79,6 +108,8 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
     prefix,
     suffix,
     infoText,
+    warningText,
+    successText,
     error,
     size = "large",
     wrapperClassName,
@@ -92,15 +123,33 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
   const inputId = id ?? generatedId;
   const helpTextId = `${inputId}-help`;
   const alertId = `${inputId}-alert`;
-  const showAlertLine = Boolean(error || infoText);
+
+  // Alert line has 4 mutually-exclusive states in Figma (error / warning / correct info
+  // / info) — priority order matches severity: error wins, then warning, then success,
+  // then the default info message.
+  const alertState = error
+    ? ("error" as const)
+    : warningText
+      ? ("warning" as const)
+      : successText
+        ? ("success" as const)
+        : infoText
+          ? ("info" as const)
+          : null;
+  const alertMessage = error ?? warningText ?? successText ?? infoText;
+  const showAlertLine = alertState !== null;
 
   const describedBy =
     [helpText ? helpTextId : null, showAlertLine ? alertId : null].filter(Boolean).join(" ") ||
     undefined;
 
   const isDisabledOrReadOnly = Boolean(rest.disabled || rest.readOnly);
-  const renderedPrefix = isDisabledOrReadOnly ? withAffixTone(prefix, "disabled") : prefix;
-  const renderedSuffix = isDisabledOrReadOnly ? withAffixTone(suffix, "disabled") : suffix;
+  const renderedPrefix = renderAffixContent(
+    isDisabledOrReadOnly ? withAffixTone(prefix, "disabled") : prefix,
+  );
+  const renderedSuffix = renderAffixContent(
+    isDisabledOrReadOnly ? withAffixTone(suffix, "disabled") : suffix,
+  );
 
   return (
     <div className={[styles.wrapper, wrapperClassName].filter(Boolean).join(" ")}>
@@ -150,13 +199,39 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
 
       {showAlertLine && (
         <div className={styles.alertLine} id={alertId}>
-          {error ? (
-            <AlertErrorIcon size={16} className={styles.alertIcon} color="var(--knky-color-status-critical-element)" />
-          ) : (
-            <AlertInfoIcon size={16} className={styles.alertIcon} />
+          {alertState === "error" && (
+            <AlertErrorIcon
+              size={16}
+              className={styles.alertIcon}
+              color="var(--knky-color-status-critical-element)"
+            />
           )}
-          <p className={[styles.alertText, error ? styles.errorText : null].filter(Boolean).join(" ")}>
-            {error || infoText}
+          {alertState === "warning" && (
+            <AlertWarningIcon
+              size={16}
+              className={styles.alertIcon}
+              color="var(--knky-color-status-caution-element)"
+            />
+          )}
+          {alertState === "success" && (
+            <CheckIcon
+              size={16}
+              className={styles.alertIcon}
+              color="var(--knky-color-status-success-element)"
+            />
+          )}
+          {alertState === "info" && <AlertInfoIcon size={16} className={styles.alertIcon} />}
+          <p
+            className={[
+              styles.alertText,
+              alertState === "error" ? styles.errorText : null,
+              alertState === "warning" ? styles.warningText : null,
+              alertState === "success" ? styles.successText : null,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {alertMessage}
           </p>
         </div>
       )}
