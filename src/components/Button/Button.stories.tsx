@@ -10,15 +10,19 @@ const meta: Meta<typeof Button> = {
     docs: {
       description: {
         component:
-          "hover/pressed/focus/disabled come from native CSS states — only `loading` is a prop, since it swaps the content for a spinner. Design source: Figma button - primary (75:11225), secondary (24:1846), tertiary (53:4793), critical (28:1308).",
+          "hover/pressed/focus/disabled come from native CSS states — `loading` and `hasOptions` are props, since they change the button's content. Design source: Figma button - primary (75:11225), secondary (24:1846), tertiary (53:4793), critical (28:1308, incl. Secondary sub-type 33:443 and icon-only 31:1574).",
       },
     },
   },
   argTypes: {
-    variant: { control: "radio", options: ["primary", "secondary", "tertiary", "critical"] },
+    variant: {
+      control: "radio",
+      options: ["primary", "secondary", "tertiary", "critical", "criticalSecondary"],
+    },
     size: { control: "radio", options: ["tiny", "large", "small"] },
     disabled: { control: "boolean" },
     loading: { control: "boolean" },
+    hasOptions: { control: "boolean" },
   },
   args: {
     children: "Button",
@@ -42,6 +46,11 @@ export const Tertiary: Story = {
 
 export const Critical: Story = {
   args: { variant: "critical" },
+};
+
+export const CriticalSecondary: Story = {
+  name: "Critical (Secondary sub-type)",
+  args: { variant: "criticalSecondary" },
 };
 
 export const AllVariants: Story = {
@@ -90,6 +99,24 @@ export const IconOnly: Story = {
   args: {
     icon: <TrashIcon size={20} />,
     "aria-label": "Delete",
+  },
+};
+
+export const CriticalIconOnly: Story = {
+  name: "Critical icon-only (bordered, not solid red)",
+  args: {
+    variant: "critical",
+    icon: <TrashIcon size={20} />,
+    "aria-label": "Delete",
+  },
+};
+
+export const HasOptions: Story = {
+  name: 'hasOptions (trailing chevron, "Has options" type)',
+  args: {
+    variant: "secondary",
+    hasOptions: true,
+    children: "Options",
   },
 };
 

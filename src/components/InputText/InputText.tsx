@@ -143,6 +143,15 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
     [helpText ? helpTextId : null, showAlertLine ? alertId : null].filter(Boolean).join(" ") ||
     undefined;
 
+  if (import.meta.env.DEV && !label && !rest["aria-label"] && !rest["aria-labelledby"]) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[KNKY UI] InputText: no `label` was passed and no `aria-label`/`aria-labelledby` " +
+        "either — screen reader users won't know what this field is for. `placeholder` " +
+        "alone isn't a substitute for an accessible name.",
+    );
+  }
+
   const isDisabledOrReadOnly = Boolean(rest.disabled || rest.readOnly);
   const renderedPrefix = renderAffixContent(
     isDisabledOrReadOnly ? withAffixTone(prefix, "disabled") : prefix,

@@ -7,9 +7,14 @@ import {
   type ReactNode,
 } from "react";
 import styles from "./Button.module.css";
-import { LoadingIcon } from "../Icon";
+import { ArrowIcon, LoadingIcon } from "../Icon";
 
-export type ButtonVariant = "primary" | "secondary" | "tertiary" | "critical";
+/**
+ * "criticalSecondary" is Figma's Critical component's "Secondary" sub-type (node
+ * 33:443) — a white/no-border button with red text, for a less visually heavy
+ * destructive action than the solid "critical" fill.
+ */
+export type ButtonVariant = "primary" | "secondary" | "tertiary" | "critical" | "criticalSecondary";
 
 /**
  * Figma names these "screenSize" variants Tiny / Large / Small — note the
@@ -45,6 +50,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    * native CSS states (:hover, :active, :focus-visible, :disabled).
    */
   loading?: boolean;
+  /**
+   * Appends a down-chevron after the label (Figma "Type = Has options", on
+   * Secondary/Tertiary) — use for a button that opens a menu/dropdown of options.
+   * Ignored on icon-only buttons.
+   */
+  hasOptions?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -53,15 +64,28 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     size = "large",
     icon,
     loading = false,
+    hasOptions = false,
     disabled,
     className,
     children,
     type = "button",
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
     ...rest
   },
   ref,
 ) {
   const isIconOnly = Boolean(icon) && !children;
+  const showOptionsIndicator = hasOptions && !isIconOnly;
+  const hasAccessibleName = Boolean(ariaLabel || ariaLabelledBy);
+
+  if (import.meta.env.DEV && isIconOnly && !hasAccessibleName) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[KNKY UI] Button: icon-only buttons have no visible text — pass `aria-label` " +
+        "(or `aria-labelledby`) so screen reader users know what the button does.",
+    );
+  }
 
   return (
     <button
@@ -69,12 +93,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
       className={[
         styles.button,
         styles[variant],
         styles[size],
         isIconOnly ? styles.iconOnly : null,
         icon && !isIconOnly ? styles.hasIcon : null,
+        showOptionsIndicator ? styles.hasOptions : null,
         loading ? styles.loading : null,
         className,
       ]
@@ -83,11 +110,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...rest}
     >
       {loading ? (
-        withCurrentColor(<LoadingIcon size={20} title="Loading" />)
+        <>
+          {withCurrentColor(<LoadingIcon size={20} title={isIconOnly ? undefined : "Loading"} />)}
+          {/* Keep the original label announced to screen readers while the spinner
+              replaces it visually, so a loading text button doesn't lose its name. */}
+          {!isIconOnly && children && <span className={styles.visuallyHidden}>{children}</span>}
+        </>
       ) : (
         <>
           {icon && withCurrentColor(icon)}
           {children}
+          {showOptionsIndicator && <ArrowIcon direction="down" size={20} color="currentColor" />}
         </>
       )}
     </button>

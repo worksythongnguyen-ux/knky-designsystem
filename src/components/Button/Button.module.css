@@ -1,10 +1,10 @@
-/* Styles for Button - matches the 4 Figma button components:
+/* Styles for Button - matches the Figma button components:
    button - primary   (75:11225)
    button - secondary (24:1846)
    button - tertiary  (53:4793)
-   button - critical  (28:1308, "Primary" sub-type — the solid/filled destructive
-                        button. Critical also has an outlined "Secondary" sub-type
-                        in Figma that isn't implemented here yet.)
+   button - critical  (28:1308 "Primary" sub-type = .critical, solid destructive fill;
+                        33:443 "Secondary" sub-type = .criticalSecondary, white/no-border
+                        with red text)
 
    hover/pressed/focus/disabled map to native CSS states (:hover, :active,
    :focus-visible, :disabled) — only `loading` needs a prop, since it swaps the
@@ -29,6 +29,21 @@
 
 .button:disabled {
   cursor: not-allowed;
+}
+
+/* Standard sr-only pattern: keeps a text node readable by screen readers without
+   showing it visually (used to preserve a text button's accessible name while
+   `loading` replaces the visible content with a spinner). */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Shared focus ring — confirmed the same link/hover blue across every variant
@@ -92,6 +107,15 @@
 }
 .small.iconOnly {
   padding: calc(var(--knky-space-8) + var(--knky-space-2));
+}
+
+/* "Has options" (Secondary/Tertiary): trailing chevron after the label. Confirmed
+   for Tiny: the 20px chevron is taller than Tiny's 16px line-height, so Figma
+   shrinks vertical padding from 6px to 4px (and right padding to 4px) to keep the
+   28px total height. Large/Small don't need this — their line-heights (20/24px)
+   already cover the chevron's height, so normal padding applies unchanged. */
+.tiny.hasOptions {
+  padding: var(--knky-space-4) var(--knky-space-4) var(--knky-space-4) var(--knky-space-8);
 }
 
 /* ==========================================================================
@@ -191,4 +215,53 @@
   background-color: var(--knky-color-bg-surface-disabled);
   background-image: none;
   color: var(--knky-color-text-disabled);
+}
+
+/* Icon-only Critical uses a bordered white-bg treatment instead of the solid red
+   fill (confirmed via Figma node 31:1574) — a subtler destructive affordance for
+   toolbar-style icon buttons, with the icon itself carrying the red color. */
+.critical.iconOnly {
+  background-color: var(--knky-color-bg-surface);
+  background-image: none;
+  border-color: var(--knky-color-border);
+  color: var(--knky-color-status-critical-element);
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+.critical.iconOnly:hover:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+}
+.critical.iconOnly:active:not(:disabled) {
+  background-color: #cccccc;
+  box-shadow:
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.25),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+.critical.iconOnly:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  color: var(--knky-color-text-disabled);
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Critical Secondary — white fill, no border, red text (Figma "Critical /
+   Secondary" sub-type, node 33:443). Only the Default state is confirmed in
+   Figma; hover/pressed/focus/disabled are inferred by analogy with Tertiary,
+   since both are flat (borderless) fills with the same neutral hover/press tint.
+   ========================================================================== */
+
+.criticalSecondary {
+  background-color: var(--knky-color-bg-surface);
+  color: var(--knky-color-status-critical-element);
+}
+.criticalSecondary:hover:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+}
+.criticalSecondary:active:not(:disabled) {
+  background-color: var(--knky-color-bg-surface-hover);
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+}
+.criticalSecondary:disabled {
+  background-color: var(--knky-color-bg-surface-disabled);
+  color: var(--knky-color-text-disabled);
+  box-shadow: none;
 }
