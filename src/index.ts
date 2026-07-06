@@ -71,3 +71,6 @@ export type { ProgressProps, ProgressState } from "./components/Progress";
 
 export { Badge } from "./components/Badge";
 export type { BadgeProps, BadgeType, BadgeState } from "./components/Badge";
+
+export { Tag } from "./components/Tag";
+export type { TagProps } from "./components/Tag";
