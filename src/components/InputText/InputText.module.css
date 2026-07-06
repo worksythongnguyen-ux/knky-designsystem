@@ -34,9 +34,12 @@
   flex: 1 0 0;
   min-width: 0;
   font-family: var(--knky-font-family-base);
-  font-size: var(--knky-body-md-size);
-  line-height: var(--knky-body-md-line-height);
-  font-weight: var(--knky-font-weight-semibold);
+  /* Corrected against the Input text component's Dev Mode code (re-confirmed on the
+     error and focus states): the Label text itself is bodySm (13/20/Regular) — the
+     Semibold weight only belongs to the "Link" sub-action next to it, not the label. */
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
   color: var(--knky-color-text-primary);
 }
 
@@ -66,7 +69,9 @@
 }
 /* Corrected against the "Link" component's Dev Mode code (node 31:1689): keyboard
    focus isn't just a color change like hover — it shows a focus ring (border-2,
-   inset -3px top/bottom, -8px left/right, radius-md), same text color as hover. */
+   radius-md), same text color as hover. Ring inset standardized to a uniform
+   -3px on every side, matching the same convention used everywhere else
+   (InputText's box ring, Button's ring). */
 .action:focus-visible {
   color: var(--knky-color-link-hover);
   outline: none;
@@ -74,7 +79,7 @@
 .action:focus-visible::after {
   content: "";
   position: absolute;
-  inset: -3px -8px;
+  inset: -3px;
   border: 2px solid var(--knky-color-link);
   border-radius: var(--knky-radius-md);
   pointer-events: none;
@@ -176,28 +181,39 @@
   font-weight: var(--knky-input-mobile-weight);
 }
 
-/* --- Interaction states (skipped entirely when disabled or read-only) --- */
+/* --- Interaction states (skipped entirely when disabled or read-only) ---
+   The :not(:has(...)) disabled/read-only guards are wrapped in :where() so they
+   contribute zero specificity — otherwise these selectors out-specificity the
+   plain single-class `.error` override below (a :has()/:not(:has()) selector is
+   far more specific than one class), which was making error inputs show the
+   grey hover/filled border instead of the red error border whenever the field
+   also had a value. */
 
-.box:hover:not(:has(.input:disabled)):not(:has(.input:read-only)) {
+.box:hover:where(:not(:has(.input:disabled)):not(:has(.input:read-only))) {
   border-color: var(--knky-color-border-hover);
 }
 
-.box:has(.input:not(:placeholder-shown)):not(:has(.input:read-only)):not(:has(.input:disabled)) {
+.box:where(:has(.input:not(:placeholder-shown))):where(
+    :not(:has(.input:read-only)):not(:has(.input:disabled))
+  ) {
   border-color: var(--knky-color-border-hover);
 }
-.box:has(.input:not(:placeholder-shown)):not(:has(.input:read-only)):not(:has(.input:disabled)) .input {
+.box:where(:has(.input:not(:placeholder-shown))):where(
+    :not(:has(.input:read-only)):not(:has(.input:disabled))
+  )
+  .input {
   color: var(--knky-color-text-primary);
 }
 
-.box:focus-within:not(:has(.input:read-only)):not(:has(.input:disabled)) {
+.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled))) {
   border-color: var(--knky-color-border-hover);
 }
-.box:focus-within:not(:has(.input:read-only)):not(:has(.input:disabled))::after {
+.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled)))::after {
   content: "";
   position: absolute;
-  /* Figma's focus ring is h-[38px] over a 32px box (h-[42px] over a 36px small box) —
-     that's +3px top/bottom but +4px left/right, not a uniform -4px inset. */
-  inset: -3px -4px;
+  /* Focus ring inset — standardized to a uniform -3px on every side, across every
+     component (Button, this Link/action ring below, etc). */
+  inset: -3px;
   border: 2px solid var(--knky-color-border-active);
   border-radius: var(--knky-radius-md);
   pointer-events: none;

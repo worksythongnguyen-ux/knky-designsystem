@@ -157,10 +157,6 @@
     inset 0 2px 4px 0 rgba(0, 0, 0, 0.25),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.25);
 }
-.secondary:focus-visible::after {
-  /* Secondary's focus ring is inset -4px in Figma, not -3px like the others. */
-  inset: -4px;
-}
 .secondary:disabled {
   background-color: var(--knky-color-bg-surface-disabled);
   color: var(--knky-color-text-disabled);
