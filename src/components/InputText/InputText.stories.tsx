@@ -36,6 +36,9 @@ export const Default: Story = {
     // Figma's own default instance demos both a prefix and a suffix icon at once —
     // included here so the deployed Storybook actually shows the suffix slot.
     suffix: <AlertQuestionIcon size={20} />,
+    // Figma's own default instance also shows the field as required (red "*" after
+    // the label) — matched here for the same reason as prefix/suffix above.
+    required: true,
   },
 };
 

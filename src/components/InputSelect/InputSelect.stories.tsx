@@ -44,6 +44,9 @@ export const Default: Story = {
     helpText: "Help text",
     infoText: "Info line",
     action: { label: "Link" },
+    // Figma's own default instance shows the field as required (red "*" after the
+    // label) — matched here for consistency with InputText's Default story.
+    required: true,
   },
 };
 
