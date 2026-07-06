@@ -32,17 +32,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         aria-invalid={error || undefined}
         {...rest}
       />
-      <span className={styles.circle}>
-        <svg className={styles.tick} viewBox="0 0 12 10" fill="none" aria-hidden="true">
-          <path
-            d="M1 5L4.5 8.5L11 1"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </span>
+      <span className={styles.circle} />
     </span>
   );
 });

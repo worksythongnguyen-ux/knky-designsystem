@@ -75,13 +75,25 @@
   left: 17px;
 }
 
-/* --- Error (prop-driven) --- */
-.wrapper.error .input:not(:disabled) ~ .track {
+/* --- Error (prop-driven) ---
+   Confirmed via Figma the off/on error states are NOT symmetric: off uses a light
+   pink track with a dark-red thumb (thumb carries the strong color), while on
+   flips to a solid dark-red track with a plain white/default-border thumb (same
+   thumb treatment as non-error checked) — verified via node 2009:493
+   (Error, Active=True) vs 2006:2941 (Error, Active=False). */
+.wrapper.error .input:not(:checked):not(:disabled) ~ .track {
   background: var(--knky-color-status-critical-bg);
 }
-.wrapper.error .input:not(:disabled) ~ .thumb {
+.wrapper.error .input:not(:checked):not(:disabled) ~ .thumb {
   background: var(--knky-color-status-critical-element);
   border-color: var(--knky-color-status-critical-bg);
+}
+.wrapper.error .input:checked:not(:disabled) ~ .track {
+  background: var(--knky-color-status-critical-element);
+}
+.wrapper.error .input:checked:not(:disabled) ~ .thumb {
+  background: var(--knky-color-bg-surface);
+  border-color: var(--knky-color-border);
 }
 
 /* --- Disabled --- */
