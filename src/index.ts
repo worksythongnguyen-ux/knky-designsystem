@@ -62,3 +62,6 @@ export type { CheckboxProps, CheckboxWithLabelProps } from "./components/Checkbo
 
 export { Radio, RadioWithLabel } from "./components/Radio";
 export type { RadioProps, RadioWithLabelProps } from "./components/Radio";
+
+export { Toggle, ToggleWithLabel } from "./components/Toggle";
+export type { ToggleProps, ToggleWithLabelProps } from "./components/Toggle";

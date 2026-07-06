@@ -1,0 +1,43 @@
+/* Styles for ToggleWithLabel - matches "Toggle with label" in Figma (node
+   2006:2881): a Toggle + label row, with an optional HelpText line underneath.
+
+   Unlike Checkbox/Radio (16px control + 8px gap = 24px help-text indent), the
+   Toggle control itself is 40px wide, so its help-text row needs 40px + 8px gap =
+   48px indent (confirmed via Figma node 2006:2880) — HelpText's own built-in
+   `indent` default (24px) doesn't fit here, so it's turned off and this local
+   48px padding class is used instead. */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-0);
+  width: 100%;
+}
+
+.row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--knky-space-8);
+  width: 100%;
+  padding: var(--knky-space-4) 0;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-body-md-weight);
+  color: var(--knky-color-text-primary);
+  cursor: pointer;
+}
+
+.labelDisabled {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.helpTextIndent {
+  padding-left: var(--knky-space-48);
+}

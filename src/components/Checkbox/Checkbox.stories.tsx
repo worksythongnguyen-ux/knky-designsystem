@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { CheckboxWithLabel } from "./CheckboxWithLabel";
 
@@ -79,6 +80,36 @@ export const AllStates: Story = {
 export const WithLabel: Story = {
   name: "CheckboxWithLabel",
   render: () => <CheckboxWithLabel label="Label" />,
+};
+
+export const TriStateCycle: Story = {
+  name: "Tri-state cycle (unchecked -> indeterminate -> checked -> ...)",
+  render: () => {
+    type TriState = "unchecked" | "indeterminate" | "checked";
+    function TriStateDemo() {
+      const [state, setState] = useState<TriState>("unchecked");
+      function next() {
+        setState((current) =>
+          current === "unchecked"
+            ? "indeterminate"
+            : current === "indeterminate"
+              ? "checked"
+              : "unchecked",
+        );
+      }
+      return (
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <Checkbox
+            checked={state === "checked"}
+            indeterminate={state === "indeterminate"}
+            onChange={next}
+          />
+          <span>Click through: {state}</span>
+        </label>
+      );
+    }
+    return <TriStateDemo />;
+  },
 };
 
 export const WithLabelAndHelpText: Story = {

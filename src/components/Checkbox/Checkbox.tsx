@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, type InputHTMLAttributes } from "react";
+import { forwardRef, useLayoutEffect, useRef, type InputHTMLAttributes } from "react";
 import styles from "./Checkbox.module.css";
 
 export interface CheckboxProps
@@ -23,9 +23,17 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 ) {
   const innerRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
+  // Deliberately no dependency array: re-applied on every render, not just when
+  // `indeterminate` changes value. Browsers clear the native `indeterminate` DOM
+  // property automatically on every user click (part of the checkbox's built-in
+  // activation behavior) — if a parent cycles through unchecked -> indeterminate
+  // -> checked -> unchecked and the `indeterminate` prop happens to read the same
+  // boolean across two renders in a row, an effect gated on `[indeterminate]`
+  // would skip re-syncing and the DOM could keep showing both the tick and the
+  // dash at once. Running unconditionally keeps the DOM always matching the prop.
+  useLayoutEffect(() => {
     if (innerRef.current) innerRef.current.indeterminate = indeterminate;
-  }, [indeterminate]);
+  });
 
   return (
     <span

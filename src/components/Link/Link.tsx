@@ -1,5 +1,20 @@
-import { forwardRef, type ReactNode, type Ref } from "react";
+import { cloneElement, forwardRef, isValidElement, type ReactElement, type ReactNode, type Ref } from "react";
 import styles from "./Link.module.css";
+
+/**
+ * Forces the icon to `color: currentColor` so it always matches the Link's own
+ * text color (blue for "text", text-primary for "tertiary") and follows it through
+ * hover/focus color changes automatically, instead of falling back to the icon's
+ * own default gray tone. Same pattern as Button's `withCurrentColor`. Only clones
+ * non-DOM elements (our own Icon components) — never a raw <span>/<svg>, which
+ * would leak `color` onto the DOM as an invalid attribute.
+ */
+function withCurrentColor(node: ReactNode): ReactNode {
+  if (isValidElement(node) && typeof node.type !== "string") {
+    return cloneElement(node as ReactElement<{ color?: string }>, { color: "currentColor" });
+  }
+  return node;
+}
 
 export type LinkVariant = "text" | "tertiary";
 
@@ -32,7 +47,7 @@ export const Link = forwardRef<HTMLAnchorElement | HTMLButtonElement, LinkProps>
   const content = (
     <>
       <span>{children}</span>
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && <span className={styles.icon}>{withCurrentColor(icon)}</span>}
     </>
   );
 

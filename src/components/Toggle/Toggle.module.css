@@ -1,0 +1,99 @@
+/* Styles for Toggle - matches "toggle" in Figma (node 168:3416) + the richer state
+   set confirmed via "Toggle with label" (node 2006:2881). Built on a real
+   <input type="checkbox" role="switch"> — checked/disabled/hover/focus all driven
+   by native pseudo-classes, only `error` is a prop.
+
+   Figma's "Hover" variant shows no color change at all vs Default — just the
+   focus ring appears — which strongly suggests it's actually a duplicated/
+   mislabeled "Focus" variant in the source file (the component's own state enum
+   doesn't list "Focus" separately). The ring is implemented here under the
+   semantically-correct `:focus-visible` state instead of `:hover`, matching every
+   other component's a11y convention in this library. */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 40px;
+  height: 20px;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--knky-color-border);
+  background: var(--knky-color-bg-surface-selected);
+  pointer-events: none;
+}
+.input:checked:not(:disabled) ~ .track {
+  background: var(--knky-color-icon-active);
+}
+
+/* Focus ring — uniform -3px, same convention as the rest of the library (radius-md
+   confirmed via Figma, distinct from the track's own 10px pill radius). */
+.input:focus-visible ~ .track::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-link-hover);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+/* Thumb — 20x14px pill (not a small circle), confirmed via Figma's inset
+   percentages on the fixed 40x20 track: 3px top/bottom, 3px/17px left depending
+   on off/on. */
+.thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: 20px;
+  box-sizing: border-box;
+  border-radius: var(--knky-radius-full);
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+.input:checked ~ .thumb {
+  left: 17px;
+}
+
+/* --- Error (prop-driven) --- */
+.wrapper.error .input:not(:disabled) ~ .track {
+  background: var(--knky-color-status-critical-bg);
+}
+.wrapper.error .input:not(:disabled) ~ .thumb {
+  background: var(--knky-color-status-critical-element);
+  border-color: var(--knky-color-status-critical-bg);
+}
+
+/* --- Disabled --- */
+.input:disabled:not(:checked) ~ .track {
+  background: var(--knky-color-bg-surface-disabled);
+}
+.input:disabled:not(:checked) ~ .thumb {
+  background: var(--knky-color-icon-disabled);
+}
+.input:disabled:checked ~ .track {
+  background: var(--knky-color-icon-disabled);
+}
+.input:disabled:checked ~ .thumb {
+  background: var(--knky-color-icon-default);
+}
