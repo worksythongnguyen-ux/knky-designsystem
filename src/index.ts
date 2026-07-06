@@ -53,3 +53,9 @@ export type { ButtonGroupProps } from "./components/ButtonGroup";
 
 export { Link } from "./components/Link";
 export type { LinkProps, LinkVariant } from "./components/Link";
+
+export { HelpText } from "./components/HelpText";
+export type { HelpTextProps } from "./components/HelpText";
+
+export { Checkbox, CheckboxWithLabel } from "./components/Checkbox";
+export type { CheckboxProps, CheckboxWithLabelProps } from "./components/Checkbox";

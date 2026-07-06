@@ -1,0 +1,17 @@
+/* Styles for HelpText - matches "Utilities/Helptext" in Figma (node 37:3932).
+   Figma's own default instance carries a built-in 24px left padding (sized to align
+   under a checkbox/radio + label row, 16px control + 8px gap = 24px) — kept as the
+   default here (`indent`), with an escape hatch to turn it off for flush usage. */
+
+.helpText {
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-secondary);
+}
+
+.indent {
+  padding-left: var(--knky-space-24);
+}

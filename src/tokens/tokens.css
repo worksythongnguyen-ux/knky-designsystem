@@ -125,6 +125,10 @@
   /* Selected-state fill for list items (confirmed via the Select item component,
      Figma var --color/bg/surface-selected, #d4d4d4). */
   --knky-color-bg-surface-selected: var(--knky-color-neutral-300);
+  /* Checkbox hover/focus background tint (confirmed via Figma var
+     --color/input/bg-surface-hover, #fafafa) — distinct from bg-surface-hover
+     above (#f1f1f1); this one is specific to form controls like Checkbox. */
+  --knky-color-input-bg-hover: #fafafa;
 
   --knky-color-border: var(--knky-color-neutral-200);
   --knky-color-border-hover: var(--knky-color-neutral-500);
