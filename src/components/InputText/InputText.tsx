@@ -210,26 +210,32 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
         <div className={styles.alertLine} id={alertId}>
           {alertState === "error" && (
             <AlertErrorIcon
-              size={16}
+              size={20}
               className={styles.alertIcon}
               color="var(--knky-color-status-critical-element)"
             />
           )}
           {alertState === "warning" && (
             <AlertWarningIcon
-              size={16}
+              size={20}
               className={styles.alertIcon}
               color="var(--knky-color-status-caution-element)"
             />
           )}
           {alertState === "success" && (
             <CheckIcon
-              size={16}
+              size={20}
               className={styles.alertIcon}
               color="var(--knky-color-status-success-element)"
             />
           )}
-          {alertState === "info" && <AlertInfoIcon size={16} className={styles.alertIcon} />}
+          {alertState === "info" && (
+            <AlertInfoIcon
+              size={20}
+              className={styles.alertIcon}
+              color="var(--knky-color-link)"
+            />
+          )}
           <p
             className={[
               styles.alertText,

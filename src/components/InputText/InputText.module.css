@@ -241,7 +241,7 @@
 
 .alertLine {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--knky-space-4);
   width: 100%;
 }

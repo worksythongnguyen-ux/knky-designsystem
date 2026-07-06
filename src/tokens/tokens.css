@@ -129,14 +129,20 @@
   --knky-color-border-active: var(--knky-color-blue-700);
 
   --knky-color-status-success-bg: var(--knky-color-green-100);
-  --knky-color-status-success-element: var(--knky-color-green-700);
+  /* Corrected against the Alert line component (Figma var --color/status/sucess/element,
+     #06730e) — the earlier value transcribed from the Colors doc page was off by one
+     step on the scale (green/700 instead of green/800). */
+  --knky-color-status-success-element: var(--knky-color-green-800);
   /* Corrected against the Input text component's "error" state (Figma vars
      --color/status/critical/bg and --color/status/critical/element) — the earlier
      values transcribed from the Colors doc page were off by one step on the scale. */
   --knky-color-status-critical-bg: var(--knky-color-red-50);
   --knky-color-status-critical-element: var(--knky-color-red-800);
   --knky-color-status-caution-bg: var(--knky-color-yellow-100);
-  --knky-color-status-caution-element: var(--knky-color-yellow-700);
+  /* Corrected against the Alert line component (Figma var --color/status/caution/element,
+     #897300) — the earlier value transcribed from the Colors doc page was off by two
+     steps on the scale (yellow/700 instead of yellow/900). */
+  --knky-color-status-caution-element: var(--knky-color-yellow-900);
 
   --knky-color-link: var(--knky-color-blue-400);
   --knky-color-link-hover: var(--knky-color-blue-600);
