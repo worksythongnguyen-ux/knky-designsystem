@@ -1,0 +1,34 @@
+/* Styles for RadioWithLabel - matches "Radio button with label" in Figma (node
+   145:2992): a Radio + label row, with an optional HelpText line underneath.
+   Identical layout to CheckboxWithLabel. */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-0);
+  width: 100%;
+}
+
+.row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--knky-space-8);
+  width: 100%;
+  padding: var(--knky-space-4) 0;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-body-md-weight);
+  color: var(--knky-color-text-primary);
+  cursor: pointer;
+}
+
+.labelDisabled {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}

@@ -59,3 +59,6 @@ export type { HelpTextProps } from "./components/HelpText";
 
 export { Checkbox, CheckboxWithLabel } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxWithLabelProps } from "./components/Checkbox";
+
+export { Radio, RadioWithLabel } from "./components/Radio";
+export type { RadioProps, RadioWithLabelProps } from "./components/Radio";

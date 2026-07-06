@@ -1,0 +1,110 @@
+/* Styles for Radio - matches "Radio button" in Figma (node 145:2874). Same visual
+   language and tokens as Checkbox (node 37:3692) — white/bordered circle by
+   default, solid-filled circle + small checkmark glyph when checked (Figma reuses
+   Checkbox's internal layer for this, just with a full border-radius instead of
+   radius-sm — not the classic empty-ring-plus-dot radio look, confirmed via the
+   Default/Error/Disabled checked variants all sharing the same filled-circle +
+   checkmark treatment as Checkbox). No indeterminate state (not a radio concept).
+
+   Uses a real native <input type="radio"> so grouping (`name`), single-select
+   behavior, and keyboard arrow-navigation within a group all come from the
+   platform for free. */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.large {
+  width: 16px;
+  height: 16px;
+}
+.small {
+  width: 18px;
+  height: 18px;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.circle {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--knky-radius-full);
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-icon-default);
+  pointer-events: none;
+}
+
+/* --- Hover (unchecked only — Figma doesn't define a checked+hover variant) --- */
+.input:hover:not(:disabled):not(:checked) ~ .circle {
+  background: var(--knky-color-input-bg-hover);
+  border-color: var(--knky-color-icon-active);
+}
+
+/* --- Focus ring — uniform -3px, same convention as the rest of the library --- */
+.input:focus-visible ~ .circle::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-link-hover);
+  border-radius: var(--knky-radius-full);
+  pointer-events: none;
+}
+.input:focus-visible:not(:disabled):not(:checked) ~ .circle {
+  background: var(--knky-color-input-bg-hover);
+}
+
+/* --- Checked --- */
+.input:checked:not(:disabled) ~ .circle {
+  background: var(--knky-color-icon-active);
+  border-color: transparent;
+}
+.input:checked:not(:disabled) ~ .circle .tick {
+  display: block;
+}
+
+/* --- Error (prop-driven) --- */
+.wrapper.error .input:not(:checked):not(:disabled) ~ .circle {
+  background: var(--knky-color-status-critical-bg);
+  border-color: var(--knky-color-status-critical-element);
+}
+.wrapper.error .input:checked:not(:disabled) ~ .circle {
+  background: var(--knky-color-status-critical-element);
+  border-color: transparent;
+}
+
+/* --- Disabled --- */
+.input:disabled:not(:checked) ~ .circle {
+  background: var(--knky-color-bg-surface-disabled);
+  border-color: transparent;
+}
+.input:disabled:checked ~ .circle {
+  background: var(--knky-color-bg-surface-disabled);
+  border-color: transparent;
+}
+.input:disabled:checked ~ .circle .tick {
+  color: var(--knky-color-icon-disabled);
+}
+
+.tick {
+  display: none;
+  color: var(--knky-color-neutral-white);
+  width: 50%;
+  height: 50%;
+}
