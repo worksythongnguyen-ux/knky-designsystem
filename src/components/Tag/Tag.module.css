@@ -1,11 +1,9 @@
 /* Styles for Tag - matches "Tag" in Figma (node 157:3292): 2 types (default,
-   has-prefix) x 5 states (default, hover, focus, disabled, selected). Border
-   color never changes across states (always border-default) — only background
-   and padding do. `gap` is applied unconditionally at space-2 since it's a
-   no-op with a single flex child (only "has prefix"/"selected" actually show
-   more than one child). Selected uses smaller/asymmetric padding to make room
-   for the 20px close icon while keeping the same 24px total height as every
-   other state. */
+   has-prefix) x 5 states (default, hover, focus, disabled, selected). `gap` is
+   applied unconditionally at space-2 since it's a no-op with a single flex
+   child (only "has prefix"/"selected" actually show more than one child).
+   Selected uses smaller/asymmetric padding to make room for the 20px close icon
+   while keeping the same 24px total height as every other state. */
 
 .tag {
   box-sizing: border-box;
@@ -19,8 +17,19 @@
   padding: var(--knky-space-4) var(--knky-space-8);
 }
 
+/* Interactive by default (Figma treats Focus as a base state of the tag itself,
+   not conditional on a specific onClick use case) — dimmed off via
+   `.disabled` below. */
+.clickable {
+  cursor: pointer;
+}
+
+/* Hover changes the border color too, not just the background — confirmed via
+   Figma (border/hover, #8a8a8a), unlike every other state which keeps
+   border-default. */
 .tag:hover:not(.disabled):not(.selected) {
   background: var(--knky-color-bg-surface-hover);
+  border-color: var(--knky-color-border-hover);
 }
 
 /* Focus ring — uniform -3px, same convention as the rest of the library (Figma's
@@ -60,8 +69,10 @@
   color: var(--knky-color-text-primary);
 }
 
-/* "has prefix" type's label is always text-secondary, even disabled — see
-   Tag.tsx doc comment. */
+/* "has prefix" type: both the "#" and the label are text-secondary (confirmed
+   via screenshot — no two-tone contrast between them), overridden by the
+   disabled rule below when applicable. */
+.tag:has(.prefix) .prefix,
 .tag:has(.prefix) .label {
   color: var(--knky-color-text-secondary);
 }
@@ -107,9 +118,7 @@
 .tag.disabled {
   background: var(--knky-color-bg-surface-disabled);
 }
-.tag.disabled .prefix {
-  color: var(--knky-color-text-disabled);
-}
-.tag.disabled:not(:has(.prefix)) .label {
+.tag.disabled .prefix,
+.tag.disabled .label {
   color: var(--knky-color-text-disabled);
 }

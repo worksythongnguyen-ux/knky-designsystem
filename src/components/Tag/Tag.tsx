@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import styles from "./Tag.module.css";
 import { CloseIcon } from "../Icon";
 
@@ -22,27 +22,67 @@ export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "prefix"
 /**
  * Small interactive keyword/filter chip. Design source: Figma node 157:3292
  * ("Tag"), 2 types x 5 states. Renders as a `<span>` (not a `<button>`) so the
- * close icon can be a real, correctly-nested `<button>` — spread `tabIndex`/
- * `role`/`onClick` via the rest props if the tag itself needs to be a focusable
- * control (e.g. a toggleable filter); `:hover`/`:focus-visible` styling is wired
- * up regardless.
+ * close icon can be a real, correctly-nested `<button>`.
  *
- * Note: per Figma, the "has prefix" type's label text always stays
- * text-secondary, even when disabled (only the "#" prefix and the plain
- * "default" type's label dim to text-disabled) — confirmed directly from the
- * Dev Mode codegen's conditional branches, not an oversight.
+ * Figma defines Focus as one of the tag's own base states (independent of any
+ * specific onClick use case, matching the component's own description: "Tags
+ * represent a set of interactive... keywords"), so the tag is always
+ * keyboard-focusable (`tabIndex=0`, `role="button"`) unless disabled — not
+ * conditional on `onClick` being passed. Enter/Space both activate it, matching
+ * how a real `<button>` behaves.
+ *
+ * Note: per Figma screenshots (the Dev Mode codegen's per-instance color
+ * branches turned out to be inconsistent/unreliable here), the "has prefix"
+ * type's "#" and label are BOTH text-secondary normally, and BOTH dim to
+ * text-disabled when disabled — no two-tone contrast between the "#" and the
+ * label, and disabled always wins regardless of type.
  */
 export const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(
-  { children, hasPrefix = false, selected = false, disabled = false, onRemove, className, ...rest },
+  {
+    children,
+    hasPrefix = false,
+    selected = false,
+    disabled = false,
+    onRemove,
+    onClick,
+    onKeyDown,
+    className,
+    ...rest
+  },
   ref,
 ) {
+  const isInteractive = !disabled;
+
+  function handleClick(event: MouseEvent<HTMLSpanElement>) {
+    if (disabled) return;
+    onClick?.(event);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLSpanElement>) {
+    onKeyDown?.(event);
+    if (isInteractive && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      (event.currentTarget as HTMLSpanElement).click();
+    }
+  }
+
   return (
     <span
       ref={ref}
-      className={[styles.tag, selected ? styles.selected : null, disabled ? styles.disabled : null, className]
+      className={[
+        styles.tag,
+        selected ? styles.selected : null,
+        disabled ? styles.disabled : null,
+        isInteractive ? styles.clickable : null,
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
       aria-disabled={disabled || undefined}
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
       {...rest}
     >
       {hasPrefix && <span className={styles.prefix}>#</span>}
@@ -51,7 +91,10 @@ export const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(
         <button
           type="button"
           className={styles.close}
-          onClick={onRemove}
+          onClick={(event) => {
+            event.stopPropagation();
+            onRemove?.();
+          }}
           disabled={disabled}
           aria-label="Remove"
         >

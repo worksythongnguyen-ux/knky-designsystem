@@ -85,3 +85,28 @@ export const RemovableList: Story = {
     return <Demo />;
   },
 };
+
+export const ClickableFilterList: Story = {
+  name: "Clickable filter list (passing onClick)",
+  render: () => {
+    function Demo() {
+      const [selected, setSelected] = useState<string[]>(["Design"]);
+      const options = ["Design", "Frontend", "Urgent"];
+      function toggle(tag: string) {
+        setSelected((current) =>
+          current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag],
+        );
+      }
+      return (
+        <div style={{ display: "flex", gap: 8 }}>
+          {options.map((tag) => (
+            <Tag key={tag} selected={selected.includes(tag)} onClick={() => toggle(tag)}>
+              {tag}
+            </Tag>
+          ))}
+        </div>
+      );
+    }
+    return <Demo />;
+  },
+};
