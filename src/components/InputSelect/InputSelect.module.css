@@ -1,0 +1,341 @@
+/* Styles for InputSelect - matches the "input-select" design in Figma (node 127:2832).
+   8 states x 2 screen sizes, same pattern as InputText (node 112:4385) with "filled"
+   renamed to "selected" in Figma. States map to native HTML/CSS wherever possible:
+   - hover      -> :hover
+   - focus      -> :focus-within (the trigger input has native :focus)
+   - selected   -> :has(.input:not(:placeholder-shown))
+   - disabled   -> native `disabled` attribute / :has(.input:disabled)
+   - read only  -> native `readOnly` attribute / :has(.input:read-only)
+   - error      -> prop-driven only (.error modifier class), since it's a validation
+                   result, not a browser-native state.
+
+   The "select-only" vs "type-to-search" behavior described by the user is NOT a
+   distinct Figma state — Figma only exposes the visual states above, so it's
+   implemented purely behaviorally (see InputSelect.tsx `searchable` prop): both modes
+   share this exact same visual box, only the input's `readOnly` attribute + key
+   handling differ. */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-4);
+  width: 100%;
+}
+
+.labelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knky-space-0);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--knky-space-8);
+}
+
+.label {
+  flex: 1 0 0;
+  min-width: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-primary);
+}
+
+.action {
+  position: relative;
+  flex-shrink: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-font-weight-semibold);
+  color: var(--knky-color-link);
+  text-decoration: underline;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.action:hover {
+  color: var(--knky-color-link-hover);
+}
+.action:active {
+  color: var(--knky-color-link-active);
+}
+.action:focus-visible {
+  color: var(--knky-color-link-hover);
+  outline: none;
+}
+.action:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-link);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+.helpText {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-xs-size);
+  line-height: var(--knky-body-xs-line-height);
+  font-weight: var(--knky-font-weight-regular);
+  color: var(--knky-color-text-secondary);
+}
+
+/* Positioning context for the box + the dropdown listbox popover. */
+.field {
+  position: relative;
+  width: 100%;
+}
+
+.box {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
+  border-radius: var(--knky-radius-sm);
+  cursor: pointer;
+}
+
+.large {
+  height: 32px;
+  max-height: 32px;
+}
+.small {
+  height: 36px;
+  max-height: 36px;
+}
+
+.affix {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--knky-color-icon-default);
+}
+/* Confirmed via Assets/Suffix Dev Mode code: unlike InputText, InputSelect uses a
+   uniform 6px (large) / 8px (small) padding around the suffix icon, not an
+   asymmetric vertical/horizontal split. */
+.large .affix {
+  padding: var(--knky-space-6);
+}
+.small .affix {
+  padding: var(--knky-space-8);
+}
+
+.input {
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--knky-font-family-base);
+  color: var(--knky-color-text-secondary);
+  padding: var(--knky-space-6) var(--knky-space-8);
+  cursor: pointer;
+}
+.input::placeholder {
+  color: var(--knky-color-text-secondary);
+}
+/* Select-only mode: the field is a readOnly trigger, not editable text — hide the
+   blinking caret so it reads clearly as a "pick from a list" control rather than a
+   text field. Searchable mode keeps the native caret. */
+.input:read-only {
+  caret-color: transparent;
+}
+.large .input {
+  font-size: var(--knky-body-lg-size);
+  line-height: var(--knky-body-lg-line-height);
+  font-weight: var(--knky-body-lg-weight);
+  cursor: pointer;
+}
+.small .input {
+  font-size: var(--knky-input-mobile-size);
+  line-height: var(--knky-input-mobile-line-height);
+  font-weight: var(--knky-input-mobile-weight);
+}
+/* Searchable mode: text-cursor instead of pointer, since the user types here. */
+.input:not(:read-only) {
+  cursor: text;
+}
+
+/* --- Interaction states (skipped entirely when disabled or read-only) ---
+   :where() zeroes the specificity of the :has()/:not(:has()) guards so the plain
+   .error class override further down still wins (same fix applied in InputText). */
+
+.box:hover:where(:not(:has(.input:disabled)):not(:has(.input:read-only))) {
+  border-color: var(--knky-color-border-hover);
+}
+
+.box:where(:has(.input:not(:placeholder-shown))):where(
+    :not(:has(.input:read-only)):not(:has(.input:disabled))
+  ) {
+  border-color: var(--knky-color-border-hover);
+}
+.box:where(:has(.input:not(:placeholder-shown))):where(
+    :not(:has(.input:read-only)):not(:has(.input:disabled))
+  )
+  .input {
+  color: var(--knky-color-text-primary);
+}
+
+.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled))) {
+  border-color: var(--knky-color-border-hover);
+}
+.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled)))::after {
+  content: "";
+  position: absolute;
+  /* Focus ring inset standardized to uniform -3px on every side, matching the
+     convention applied across every other component in the library — the raw Figma
+     Dev Mode numbers for this ring were asymmetric (-4px sides, fixed 38px height). */
+  inset: -3px;
+  border: 2px solid var(--knky-color-border-active);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+/* --- Disabled / read-only --- */
+
+.box:has(.input:disabled) {
+  background: var(--knky-color-bg-surface-disabled);
+  cursor: not-allowed;
+}
+.input:disabled {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}
+.box:has(.input:disabled) .affix {
+  color: var(--knky-color-icon-disabled);
+}
+
+.box:has(.input:read-only) {
+  background: var(--knky-color-bg-surface-disabled);
+}
+
+/* --- Error (prop-driven, overrides the states above) --- */
+
+.error {
+  background: var(--knky-color-status-critical-bg);
+  border-color: var(--knky-color-status-critical-element);
+}
+.error .input {
+  color: var(--knky-color-text-primary);
+}
+.error:hover,
+.error:focus-within {
+  border-color: var(--knky-color-status-critical-element);
+}
+.error:focus-within::after {
+  border-color: var(--knky-color-status-critical-element);
+}
+
+/* --- Alert line (info / warning / success / error text below the input) --- */
+
+.alertLine {
+  display: flex;
+  align-items: center;
+  gap: var(--knky-space-4);
+  width: 100%;
+}
+
+.alertText {
+  flex: 1 0 0;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-secondary);
+}
+.alertText.errorText {
+  color: var(--knky-color-status-critical-element);
+}
+.alertText.warningText {
+  color: var(--knky-color-status-caution-element);
+}
+.alertText.successText {
+  color: var(--knky-color-status-success-element);
+}
+
+.alertIcon {
+  flex-shrink: 0;
+}
+
+/* --- Dropdown listbox popover ---
+   NOT covered by Figma's exposed states (Figma only shows the closed input's 8
+   states) — panel/option styling below infers from the same tokens used elsewhere
+   in the library (border, radius-sm, bg-surface, bg-surface-hover) rather than a
+   confirmed Figma spec. The box-shadow value is a plain literal, no elevation
+   token exists yet in tokens.css. */
+
+.listbox {
+  box-sizing: border-box;
+  position: absolute;
+  top: calc(100% + var(--knky-space-4));
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--knky-space-4);
+  list-style: none;
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
+  border-radius: var(--knky-radius-sm);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.12);
+}
+
+.option {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: var(--knky-space-6) var(--knky-space-8);
+  border-radius: var(--knky-radius-sm);
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-lg-size);
+  line-height: var(--knky-body-lg-line-height);
+  font-weight: var(--knky-body-lg-weight);
+  color: var(--knky-color-text-primary);
+  cursor: pointer;
+}
+.option[data-active="true"] {
+  background: var(--knky-color-bg-surface-hover);
+}
+.option[aria-selected="true"] {
+  font-weight: var(--knky-font-weight-semibold);
+}
+.option[aria-disabled="true"] {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.emptyState {
+  padding: var(--knky-space-6) var(--knky-space-8);
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  color: var(--knky-color-text-secondary);
+}

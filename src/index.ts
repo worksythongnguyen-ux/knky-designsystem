@@ -34,3 +34,10 @@ export type { InputTextProps, InputTextAction } from "./components/InputText";
 
 export { Button } from "./components/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button";
+
+export { InputSelect } from "./components/InputSelect";
+export type {
+  InputSelectProps,
+  InputSelectOption,
+  InputSelectAction,
+} from "./components/InputSelect";

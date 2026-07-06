@@ -97,6 +97,10 @@ export const WithIcon: Story = {
 
 export const IconOnly: Story = {
   args: {
+    // `meta.args` sets a default `children: "Button"` for convenience on the other
+    // stories — has to be cleared here, otherwise Storybook merges it in and the
+    // button renders text + icon instead of icon-only.
+    children: undefined,
     icon: <TrashIcon size={20} />,
     "aria-label": "Delete",
   },
@@ -105,6 +109,7 @@ export const IconOnly: Story = {
 export const CriticalIconOnly: Story = {
   name: "Critical icon-only (bordered, not solid red)",
   args: {
+    children: undefined,
     variant: "critical",
     icon: <TrashIcon size={20} />,
     "aria-label": "Delete",
