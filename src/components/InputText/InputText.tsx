@@ -15,6 +15,7 @@ import {
   CheckIcon,
   type IconTone,
 } from "../Icon";
+import { Link } from "../Link";
 
 /**
  * Prefix/suffix icons switch to the "disabled" icon tone when the field is disabled
@@ -172,16 +173,11 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
                 {required && <span className={styles.required}>*</span>}
               </label>
             )}
-            {action &&
-              (action.href ? (
-                <a href={action.href} className={styles.action}>
-                  {action.label}
-                </a>
-              ) : (
-                <button type="button" onClick={action.onClick} className={styles.action}>
-                  {action.label}
-                </button>
-              ))}
+            {action && (
+              <Link href={action.href} onClick={action.onClick}>
+                {action.label}
+              </Link>
+            )}
           </div>
           {helpText && (
             <p id={helpTextId} className={styles.helpText}>

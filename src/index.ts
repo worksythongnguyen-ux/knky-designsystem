@@ -50,3 +50,6 @@ export type { SectionTitleProps } from "./components/SectionTitle";
 
 export { ButtonGroup } from "./components/ButtonGroup";
 export type { ButtonGroupProps } from "./components/ButtonGroup";
+
+export { Link } from "./components/Link";
+export type { LinkProps, LinkVariant } from "./components/Link";

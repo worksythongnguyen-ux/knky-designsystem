@@ -51,42 +51,8 @@
   color: var(--knky-color-status-critical-element);
 }
 
-.action {
-  position: relative;
-  flex-shrink: 0;
-  font-family: var(--knky-font-family-base);
-  font-size: var(--knky-body-md-size);
-  line-height: var(--knky-body-md-line-height);
-  font-weight: var(--knky-font-weight-semibold);
-  color: var(--knky-color-link);
-  text-decoration: underline;
-  appearance: none;
-  -webkit-appearance: none;
-  background: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.action:hover {
-  color: var(--knky-color-link-hover);
-}
-.action:active {
-  color: var(--knky-color-link-active);
-}
-.action:focus-visible {
-  color: var(--knky-color-link-hover);
-  outline: none;
-}
-.action:focus-visible::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border: 2px solid var(--knky-color-link);
-  border-radius: var(--knky-radius-md);
-  pointer-events: none;
-}
+/* The label's "action" sub-item (Figma "link", node 31:1689) is now the standalone
+   Link component (src/components/Link) — no styling needed here anymore. */
 
 .helpText {
   margin: 0;

@@ -20,6 +20,7 @@ import {
 } from "../Icon";
 import { SelectItem } from "../SelectItem";
 import { SectionTitle } from "../SectionTitle";
+import { Link } from "../Link";
 
 export interface InputSelectOption {
   value: string;
@@ -370,16 +371,11 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
                 {required && <span className={styles.required}>*</span>}
               </label>
             )}
-            {action &&
-              (action.href ? (
-                <a href={action.href} className={styles.action}>
-                  {action.label}
-                </a>
-              ) : (
-                <button type="button" onClick={action.onClick} className={styles.action}>
-                  {action.label}
-                </button>
-              ))}
+            {action && (
+              <Link href={action.href} onClick={action.onClick}>
+                {action.label}
+              </Link>
+            )}
           </div>
           {helpText && (
             <p id={helpTextId} className={styles.helpText}>

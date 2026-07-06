@@ -1,0 +1,73 @@
+/* Styles for Link - matches "link" in Figma (node 31:1689). 2 types x 3 states
+   (Default/Hover/Focus), plus an "Include Icon" variant (trailing icon, confirmed
+   gap-2). Hover/focus use native CSS states; disabled falls back to rendering a
+   real disabled <button> (native :disabled), since a disabled `<a>` isn't
+   meaningfully non-interactive on its own. */
+
+.link {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--knky-space-2);
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-body-md-weight);
+  text-decoration: underline;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--knky-radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Figma "Text" type — the common blue link. */
+.text {
+  color: var(--knky-color-link);
+}
+.text:hover {
+  color: var(--knky-color-link-hover);
+}
+.text:focus-visible {
+  color: var(--knky-color-link-hover);
+  outline: none;
+}
+
+/* Figma "Tertiary" type — muted, text-primary colored link. Confirmed via Figma:
+   unlike Text, Tertiary's hover state keeps the same text-primary color (no color
+   change on hover) — only the focus ring differs from plain hover. */
+.tertiary {
+  color: var(--knky-color-text-primary);
+}
+.tertiary:focus-visible {
+  outline: none;
+}
+
+/* Focus ring — standardized to uniform -3px on every side (same convention as the
+   rest of the library). Figma's raw Dev Mode numbers were asymmetric (-3px top/
+   bottom, -8px left/right). */
+.link:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-link);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+.link:disabled {
+  color: var(--knky-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
