@@ -31,11 +31,11 @@ export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "prefix"
  * conditional on `onClick` being passed. Enter/Space both activate it, matching
  * how a real `<button>` behaves.
  *
- * Note: per Figma screenshots (the Dev Mode codegen's per-instance color
- * branches turned out to be inconsistent/unreliable here), the "has prefix"
- * type's "#" and label are BOTH text-secondary normally, and BOTH dim to
- * text-disabled when disabled — no two-tone contrast between the "#" and the
- * label, and disabled always wins regardless of type.
+ * Note: the "#" prefix is always the muted text-disabled tone, in every state —
+ * a deliberate two-tone look next to the label, which stays text-primary (same
+ * as the no-prefix type) until the whole tag is disabled, at which point both
+ * dim together. Confirmed via a close-up screenshot after an earlier pass
+ * wrongly read them as the same shade (see Tag.module.css comments).
  */
 export const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(
   {

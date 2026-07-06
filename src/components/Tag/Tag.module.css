@@ -61,20 +61,23 @@
   white-space: nowrap;
 }
 
+/* The "#" is always the muted text-disabled tone, in every state (including
+   non-disabled ones) — confirmed via a close-up screenshot of node 157:3297
+   ("has prefix", default): the "#" is visibly lighter than "Tag label" right
+   next to it, a deliberate two-tone look, not a rendering artifact. Re-verified
+   against a second, more detailed Dev Mode fetch that explicitly set
+   text-disabled on the "#" for default/hover/focus/selected, and left it
+   inheriting the same value from the wrapper for "disabled". */
 .prefix {
-  color: var(--knky-color-text-primary);
+  color: var(--knky-color-text-disabled);
 }
 
+/* The label itself stays text-primary (same as the no-prefix "default" type)
+   in every state except disabled, where it inherits text-disabled from the
+   `.disabled` rule below — it does NOT dim to text-secondary just because the
+   tag has a prefix (that was an earlier misreading of the same screenshot). */
 .label {
   color: var(--knky-color-text-primary);
-}
-
-/* "has prefix" type: both the "#" and the label are text-secondary (confirmed
-   via screenshot — no two-tone contrast between them), overridden by the
-   disabled rule below when applicable. */
-.tag:has(.prefix) .prefix,
-.tag:has(.prefix) .label {
-  color: var(--knky-color-text-secondary);
 }
 
 .close {
