@@ -73,6 +73,10 @@ export const semanticColorGroups: { title: string; tokens: TokenEntry[] }[] = [
       { token: "--knky-color-status-critical-element", name: "critical-element" },
       { token: "--knky-color-status-caution-bg", name: "caution-bg" },
       { token: "--knky-color-status-caution-element", name: "caution-element" },
+      { token: "--knky-color-status-info-bg", name: "info-bg" },
+      { token: "--knky-color-status-info-element", name: "info-element" },
+      { token: "--knky-color-badge-bg-success", name: "badge-bg-success" },
+      { token: "--knky-color-badge-bg-warning", name: "badge-bg-warning" },
     ],
   },
   {

@@ -1,0 +1,31 @@
+/* Styles for Progress - matches "Assets/Progress" in Figma (node 140:1927): a
+   20x20 box with an 8x8 glyph centered. Color is resolved through a local custom
+   property (`--knky-progress-color`) with an icon-default fallback, so a parent
+   (like Badge) can override just the color without fighting this module's own
+   specificity — set `--knky-progress-color` on the className passed in, never
+   `color` directly. */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--knky-progress-color, var(--knky-color-icon-default));
+}
+
+.dot {
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: currentColor;
+  border: 1.25px solid currentColor;
+}
+
+.icon {
+  width: 8px;
+  height: 8px;
+}

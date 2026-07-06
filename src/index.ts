@@ -65,3 +65,9 @@ export type { RadioProps, RadioWithLabelProps } from "./components/Radio";
 
 export { Toggle, ToggleWithLabel } from "./components/Toggle";
 export type { ToggleProps, ToggleWithLabelProps } from "./components/Toggle";
+
+export { Progress } from "./components/Progress";
+export type { ProgressProps, ProgressState } from "./components/Progress";
+
+export { Badge } from "./components/Badge";
+export type { BadgeProps, BadgeType, BadgeState } from "./components/Badge";

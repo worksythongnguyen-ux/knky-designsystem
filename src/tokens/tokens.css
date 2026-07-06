@@ -151,6 +151,22 @@
      steps on the scale (yellow/700 instead of yellow/900). */
   --knky-color-status-caution-element: var(--knky-color-yellow-900);
 
+  /* Info status, confirmed via the Badge component (Figma vars --color/status/info/bg,
+     #e7f1fc and --color/status/info/element-2, #0b539b) — no info status existed yet
+     before Badge needed one. */
+  --knky-color-status-info-bg: var(--knky-color-blue-50);
+  --knky-color-status-info-element: var(--knky-color-blue-800);
+
+  /* Badge-only success/caution background tints — confirmed via the Badge component
+     (Figma vars --color/status/sucess/bg, #e7f9e9 and --color/status/caution/bg,
+     #fffae0), which use a lighter tint (the 50-step) than the shared
+     status-success-bg/status-caution-bg tokens above (100-step, deliberately matched
+     to the Alert line component instead — see comments above). Kept as distinct
+     tokens rather than changing the shared ones, since both are independently
+     confirmed against their own Figma source and aren't meant to be the same value. */
+  --knky-color-badge-bg-success: var(--knky-color-green-50);
+  --knky-color-badge-bg-warning: var(--knky-color-yellow-50);
+
   --knky-color-link: var(--knky-color-blue-400);
   --knky-color-link-hover: var(--knky-color-blue-600);
   --knky-color-link-active: var(--knky-color-blue-800);

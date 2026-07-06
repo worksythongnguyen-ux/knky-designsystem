@@ -1,0 +1,86 @@
+/* Styles for Badge - matches "Badge" in Figma (node 140:1924): 5 types (default,
+   info, success, critical, warning) x 4 states (default, completed, processing,
+   incomplete). All variants are a fixed 20px-tall pill (radius-sm); the icon
+   states get zero vertical/left padding since the 20x20 Progress icon already
+   provides that spacing, while the label-only "default" state uses explicit
+   space-8/space-2 padding to reach the same 20px height. */
+
+.badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--knky-radius-sm);
+}
+
+.noIcon {
+  padding: var(--knky-space-2) var(--knky-space-8);
+}
+
+.withIcon {
+  padding: 0 var(--knky-space-8) 0 0;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-heading-xs-size);
+  line-height: var(--knky-heading-xs-line-height);
+  font-weight: var(--knky-heading-xs-weight);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* --- default --- */
+.default {
+  background: var(--knky-color-bg-surface-disabled);
+}
+.default .label {
+  color: var(--knky-color-text-secondary);
+}
+.default .progress {
+  --knky-progress-color: var(--knky-color-icon-default);
+}
+
+/* --- info --- */
+.info {
+  background: var(--knky-color-status-info-bg);
+}
+.info .label {
+  color: var(--knky-color-status-info-element);
+}
+.info .progress {
+  --knky-progress-color: var(--knky-color-status-info-element);
+}
+
+/* --- success --- */
+.success {
+  background: var(--knky-color-badge-bg-success);
+}
+.success .label {
+  color: var(--knky-color-status-success-element);
+}
+.success .progress {
+  --knky-progress-color: var(--knky-color-status-success-element);
+}
+
+/* --- critical --- */
+.critical {
+  background: var(--knky-color-status-critical-bg);
+}
+.critical .label {
+  color: var(--knky-color-status-critical-element);
+}
+.critical .progress {
+  --knky-progress-color: var(--knky-color-status-critical-element);
+}
+
+/* --- warning --- */
+.warning {
+  background: var(--knky-color-badge-bg-warning);
+}
+.warning .label {
+  color: var(--knky-color-status-caution-element);
+}
+.warning .progress {
+  --knky-progress-color: var(--knky-color-status-caution-element);
+}
