@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { InputText } from "./InputText";
-import { SearchIcon } from "../Icon";
+import { SearchIcon, AlertQuestionIcon } from "../Icon";
 
 const meta: Meta<typeof InputText> = {
   title: "Components/InputText",
@@ -33,6 +33,9 @@ export const Default: Story = {
     infoText: "Info line",
     action: { label: "Link" },
     prefix: <SearchIcon size={20} />,
+    // Figma's own default instance demos both a prefix and a suffix icon at once —
+    // included here so the deployed Storybook actually shows the suffix slot.
+    suffix: <AlertQuestionIcon size={20} />,
   },
 };
 
