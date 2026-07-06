@@ -14,7 +14,11 @@ export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "prefix"
    * element — this mirrors ButtonGroup/SectionTitle elsewhere in this library.
    */
   disabled?: boolean;
-  /** Called when the close icon is activated (only rendered when `selected`). */
+  /**
+   * Called when the close icon is activated (only rendered when `selected`). If
+   * omitted, clicking the close icon just falls through to the tag's own
+   * `onClick` instead of doing nothing — see the click handler below.
+   */
   onRemove?: () => void;
   className?: string;
 }
@@ -92,11 +96,19 @@ export const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(
           type="button"
           className={styles.close}
           onClick={(event) => {
-            event.stopPropagation();
-            onRemove?.();
+            // Only intercept the click when there's a distinct remove action —
+            // otherwise let it bubble up to the tag's own onClick, so a
+            // toggleable-filter Tag (onClick only, no onRemove) stays fully
+            // clickable everywhere, including on top of the close icon, instead
+            // of the icon silently swallowing the click and doing nothing.
+            if (onRemove) {
+              event.stopPropagation();
+              onRemove();
+            }
           }}
           disabled={disabled}
-          aria-label="Remove"
+          aria-label={onRemove ? "Remove" : undefined}
+          tabIndex={onRemove ? 0 : -1}
         >
           <CloseIcon size={20} tone={disabled ? "disabled" : "default"} />
         </button>
