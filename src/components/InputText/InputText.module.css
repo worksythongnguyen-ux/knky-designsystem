@@ -42,6 +42,10 @@
   font-weight: var(--knky-body-sm-weight);
   color: var(--knky-color-text-primary);
 }
+/* Required-field marker (Figma: red "*" right after the label text). */
+.required {
+  color: var(--knky-color-status-critical-element);
+}
 
 .action {
   position: relative;

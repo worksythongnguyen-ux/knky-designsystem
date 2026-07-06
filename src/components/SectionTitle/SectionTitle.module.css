@@ -1,0 +1,39 @@
+/* Styles for SectionTitle - matches "Assets/Action list/section title" in Figma
+   (node 126:3360). Used to group rows in a select / action list (Figma "Group" type,
+   node 127:2003): the first section in a list has no top divider, every section
+   after that gets a `divider` (border-top), confirmed via the Group example. */
+
+.sectionTitle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--knky-space-12) var(--knky-space-12) var(--knky-space-6);
+}
+
+.divider {
+  border-top: 1px solid var(--knky-color-border);
+}
+
+/* Updated against a re-check of Figma node 126:3360: the section label is now
+   bodyMd (13/20/Semibold), text-secondary — was bodyLg/Regular (14/20) before the
+   user's Figma update. Helper text underneath is unchanged (bodySm/Regular). */
+.label {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-body-md-weight);
+  color: var(--knky-color-text-secondary);
+}
+
+.helperText {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-secondary);
+}

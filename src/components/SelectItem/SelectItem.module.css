@@ -1,0 +1,107 @@
+/* Styles for SelectItem - matches "Assets/Action list/Items" in Figma (node
+   118:2380), Type=Default. 5 states: default / hover / focus / selected / disabled.
+   hover uses native :hover; "focus" here represents the keyboard-active option in a
+   combobox listbox (aria-activedescendant pattern keeps real DOM focus on the input,
+   so this is driven by `data-active`, not native :focus-visible) — selected/disabled
+   are prop-driven.
+
+   Figma also defines a "Destructive" type (118:2772 etc., e.g. for a red "Delete"
+   menu action) — out of scope for this pass, since it's not needed by InputSelect's
+   option list. Only "Default" type is implemented here. */
+
+.item {
+  box-sizing: border-box;
+  list-style: none;
+  width: 100%;
+  padding: var(--knky-space-6);
+}
+
+.content {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--knky-space-4);
+  width: 100%;
+  padding: var(--knky-space-6);
+  border-radius: var(--knky-radius-sm);
+  background: var(--knky-color-bg-surface);
+  cursor: pointer;
+}
+
+.content:hover {
+  background: var(--knky-color-bg-surface-hover);
+}
+
+/* Keyboard-active option (combobox aria-activedescendant) — same ring convention
+   (uniform -3px) confirmed via Figma's own "Focus" variant for this component. */
+.content.active {
+  background: var(--knky-color-bg-surface-hover);
+}
+.content.active::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--knky-color-border-active);
+  border-radius: var(--knky-radius-md);
+  pointer-events: none;
+}
+
+.content.selected {
+  background: var(--knky-color-bg-surface-selected);
+}
+.content.selected:hover {
+  background: var(--knky-color-bg-surface-selected);
+}
+
+.content.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.content.disabled:hover {
+  background: var(--knky-color-bg-surface);
+}
+
+.prefix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--knky-color-icon-default);
+}
+
+.labelGroup {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-mg-size);
+  line-height: var(--knky-body-mg-line-height);
+  font-weight: var(--knky-body-mg-weight);
+  color: var(--knky-color-text-primary);
+}
+.content.disabled .label,
+.content.disabled .helperText {
+  color: var(--knky-color-text-disabled);
+}
+
+.helperText {
+  margin: 0;
+  width: 100%;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
+  color: var(--knky-color-text-secondary);
+}
+
+.check {
+  flex-shrink: 0;
+}

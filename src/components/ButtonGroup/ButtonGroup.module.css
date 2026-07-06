@@ -1,0 +1,85 @@
+/* Styles for ButtonGroup - matches "Button group" in Figma (node 127:3640).
+   Three Figma "Type" variants map onto two independent axes here:
+   - "default" (row, gap-8 between buttons)      -> direction="row"    joined={false}
+   - "Segmented" (row, buttons visually joined)   -> direction="row"    joined={true}
+   - "top bottom" (column, full-width, gap-8)     -> direction="column" joined={false}
+   Screen size (Tiny/Large/Small) isn't a separate prop here — it comes from each
+   child Button's own `size` prop, since ButtonGroup just arranges Buttons, it
+   doesn't re-implement their sizing.
+
+   Targets plain `button` child elements (not a class) so it works with the
+   existing Button component's rendered <button> tag with zero extra wiring on
+   the consumer's part. */
+
+.group {
+  display: flex;
+}
+
+.row {
+  flex-direction: row;
+  align-items: center;
+}
+.column {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.row:not(.joined) {
+  gap: var(--knky-space-8);
+}
+.column:not(.joined) {
+  gap: var(--knky-space-8);
+}
+
+/* Segmented (Figma "Segmented" type, confirmed via node 127:3680): buttons touch
+   with a shared 1px border (adjacent borders overlap via negative margin) and only
+   the two outer corners keep the radius — everything in between is square.
+   Confirmed for Secondary buttons, which is the only variant Figma's Segmented
+   example uses (its visible 1px border is what makes the seam read correctly). */
+.joined.row > button {
+  border-radius: 0;
+  margin-left: -1px;
+}
+.joined.row > button:first-child {
+  margin-left: 0;
+  border-top-left-radius: var(--knky-radius-sm);
+  border-bottom-left-radius: var(--knky-radius-sm);
+}
+.joined.row > button:last-child {
+  border-top-right-radius: var(--knky-radius-sm);
+  border-bottom-right-radius: var(--knky-radius-sm);
+}
+.joined.row > button {
+  position: relative;
+}
+.joined.row > button:hover,
+.joined.row > button:focus-visible {
+  z-index: 1;
+}
+
+.joined.column > button {
+  border-radius: 0;
+  margin-top: -1px;
+}
+.joined.column > button:first-child {
+  margin-top: 0;
+  border-top-left-radius: var(--knky-radius-sm);
+  border-top-right-radius: var(--knky-radius-sm);
+}
+.joined.column > button:last-child {
+  border-bottom-left-radius: var(--knky-radius-sm);
+  border-bottom-right-radius: var(--knky-radius-sm);
+}
+.joined.column > button {
+  position: relative;
+}
+.joined.column > button:hover,
+.joined.column > button:focus-visible {
+  z-index: 1;
+}
+
+/* "top bottom" / column layout: Figma shows each button filling the full width. */
+.column > button {
+  width: 100%;
+}

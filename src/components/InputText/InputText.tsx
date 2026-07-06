@@ -115,6 +115,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
     wrapperClassName,
     id,
     className,
+    required,
     ...rest
   },
   ref,
@@ -168,6 +169,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
             {label && (
               <label htmlFor={inputId} className={styles.label}>
                 {label}
+                {required && <span className={styles.required}>*</span>}
               </label>
             )}
             {action &&
@@ -201,6 +203,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(function I
           className={[styles.input, className].filter(Boolean).join(" ")}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
+          required={required}
           {...rest}
         />
         {suffix && <span className={styles.affix}>{renderedSuffix}</span>}

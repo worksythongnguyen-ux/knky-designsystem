@@ -122,6 +122,9 @@
   /* Distinct from bg-disabled above: used for disabled/read-only form field backgrounds
      (confirmed via the Input text component, Figma var --color/bg/surface-disabled). */
   --knky-color-bg-surface-disabled: var(--knky-color-neutral-200);
+  /* Selected-state fill for list items (confirmed via the Select item component,
+     Figma var --color/bg/surface-selected, #d4d4d4). */
+  --knky-color-bg-surface-selected: var(--knky-color-neutral-300);
 
   --knky-color-border: var(--knky-color-neutral-200);
   --knky-color-border-hover: var(--knky-color-neutral-500);

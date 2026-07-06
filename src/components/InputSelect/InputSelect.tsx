@@ -1,4 +1,5 @@
 import {
+  Fragment,
   forwardRef,
   useCallback,
   useEffect,
@@ -17,10 +18,14 @@ import {
   CheckIcon,
   SortIcon,
 } from "../Icon";
+import { SelectItem } from "../SelectItem";
+import { SectionTitle } from "../SectionTitle";
 
 export interface InputSelectOption {
   value: string;
   label: ReactNode;
+  /** Secondary line shown under the label inside the dropdown row (Figma: SelectItem helper text). */
+  helperText?: ReactNode;
   /**
    * Plain-text version of `label`, used both to display the selected value inside
    * the closed input and to match against what the user types in searchable mode.
@@ -28,6 +33,12 @@ export interface InputSelectOption {
    */
   searchText?: string;
   disabled?: boolean;
+  /**
+   * Groups options under a SectionTitle divider (Figma "Action list" Group type,
+   * node 127:2003) — options sharing the same `groupLabel` render together under
+   * one heading. Options should already be ordered by group.
+   */
+  groupLabel?: string;
 }
 
 export interface InputSelectAction {
@@ -86,6 +97,29 @@ export interface InputSelectProps {
 
 function normalizeText(node: ReactNode): string {
   return typeof node === "string" || typeof node === "number" ? String(node) : "";
+}
+
+/** Moves the active index one step in `direction`, skipping disabled options, and
+ * stopping (not wrapping) at the first/last option. */
+function moveActive(list: InputSelectOption[], current: number, direction: 1 | -1): number {
+  let index = current;
+  for (let step = 0; step < list.length; step++) {
+    index += direction;
+    if (index < 0 || index >= list.length) return current;
+    if (!list[index]?.disabled) return index;
+  }
+  return current;
+}
+
+function firstEnabledIndex(list: InputSelectOption[]): number {
+  return list.findIndex((option) => !option.disabled);
+}
+
+function lastEnabledIndex(list: InputSelectOption[]): number {
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (!list[i].disabled) return i;
+  }
+  return -1;
 }
 
 /**
@@ -176,8 +210,12 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
   const open = useCallback(() => {
     if (!isInteractive) return;
     setIsOpen(true);
-    const currentIndex = filteredOptions.findIndex((option) => option.value === selectedValue);
-    setActiveIndex(currentIndex >= 0 ? currentIndex : 0);
+    const selectedIndex = filteredOptions.findIndex((option) => option.value === selectedValue);
+    const startIndex =
+      selectedIndex >= 0 && !filteredOptions[selectedIndex].disabled
+        ? selectedIndex
+        : firstEnabledIndex(filteredOptions);
+    setActiveIndex(startIndex >= 0 ? startIndex : 0);
   }, [isInteractive, filteredOptions, selectedValue]);
 
   const close = useCallback(() => {
@@ -217,7 +255,7 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
         if (!isOpen) {
           open();
         } else {
-          setActiveIndex((index) => Math.min(index + 1, filteredOptions.length - 1));
+          setActiveIndex((index) => moveActive(filteredOptions, index, 1));
         }
         break;
       case "ArrowUp":
@@ -225,7 +263,7 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
         if (!isOpen) {
           open();
         } else {
-          setActiveIndex((index) => Math.max(index - 1, 0));
+          setActiveIndex((index) => moveActive(filteredOptions, index, -1));
         }
         break;
       case "Enter":
@@ -253,13 +291,15 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
       case "Home":
         if (isOpen) {
           event.preventDefault();
-          setActiveIndex(0);
+          const index = firstEnabledIndex(filteredOptions);
+          if (index >= 0) setActiveIndex(index);
         }
         break;
       case "End":
         if (isOpen) {
           event.preventDefault();
-          setActiveIndex(filteredOptions.length - 1);
+          const index = lastEnabledIndex(filteredOptions);
+          if (index >= 0) setActiveIndex(index);
         }
         break;
       default:
@@ -286,6 +326,39 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
   const activeOption = filteredOptions[activeIndex];
   const activeOptionId = activeOption ? `${listboxId}-option-${activeOption.value}` : undefined;
 
+  // Renders each option as a SelectItem, inserting a SectionTitle divider whenever
+  // `groupLabel` changes — the first group has no divider, every group after that
+  // does (matches Figma's "Group" Action list example, node 127:2003).
+  let previousGroupLabel: string | undefined;
+  let isFirstGroup = true;
+  const listboxContent = filteredOptions.map((option, index) => {
+    let header: ReactNode = null;
+    if (option.groupLabel !== undefined && option.groupLabel !== previousGroupLabel) {
+      header = <SectionTitle label={option.groupLabel} divider={!isFirstGroup} />;
+      previousGroupLabel = option.groupLabel;
+      isFirstGroup = false;
+    }
+    return (
+      <Fragment key={option.value}>
+        {header && <li role="presentation">{header}</li>}
+        <SelectItem
+          id={`${listboxId}-option-${option.value}`}
+          role="option"
+          aria-selected={option.value === selectedValue}
+          label={option.label}
+          helperText={option.helperText}
+          selected={option.value === selectedValue}
+          disabled={option.disabled}
+          active={index === activeIndex}
+          onMouseEnter={() => {
+            if (!option.disabled) setActiveIndex(index);
+          }}
+          onClick={() => selectOption(option)}
+        />
+      </Fragment>
+    );
+  });
+
   return (
     <div className={[styles.wrapper, wrapperClassName].filter(Boolean).join(" ")}>
       {(label || action) && (
@@ -294,6 +367,7 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
             {label && (
               <label htmlFor={inputId} className={styles.label}>
                 {label}
+                {required && <span className={styles.required}>*</span>}
               </label>
             )}
             {action &&
@@ -317,12 +391,22 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
 
       <div className={styles.field} ref={fieldRef}>
         <div
-          className={[styles.box, styles[size], error ? styles.error : null]
+          className={[
+            styles.box,
+            styles[size],
+            error ? styles.error : null,
+            // Figma's "read only" visual (fully static, greyed out) — driven only by
+            // the `readOnly` prop, never by the native attribute (see the CSS file
+            // for why: select-only mode also sets the native attribute, for a
+            // different reason, and must NOT get this greyed-out look).
+            readOnly ? styles.static : null,
+          ]
             .filter(Boolean)
             .join(" ")}
           onClick={() => {
             if (!isInteractive) return;
-            if (!isOpen) open();
+            if (isOpen) close();
+            else open();
             inputRef.current?.focus();
           }}
         >
@@ -356,9 +440,6 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
               if (!isOpen) open();
               else setActiveIndex(0);
             }}
-            onFocus={() => {
-              if (!searchable && isInteractive) open();
-            }}
             onKeyDown={handleKeyDown}
           />
           <span className={styles.affix}>
@@ -369,23 +450,11 @@ export const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(functi
         {isOpen && (
           <ul className={styles.listbox} id={listboxId} role="listbox">
             {filteredOptions.length === 0 ? (
-              <li className={styles.emptyState}>No results</li>
+              <li className={styles.emptyState} role="presentation">
+                No results
+              </li>
             ) : (
-              filteredOptions.map((option, index) => (
-                <li
-                  key={option.value}
-                  id={`${listboxId}-option-${option.value}`}
-                  role="option"
-                  aria-selected={option.value === selectedValue}
-                  aria-disabled={option.disabled || undefined}
-                  data-active={index === activeIndex}
-                  className={styles.option}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onClick={() => selectOption(option)}
-                >
-                  {option.label}
-                </li>
-              ))
+              listboxContent
             )}
           </ul>
         )}

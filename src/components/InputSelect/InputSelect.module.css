@@ -46,6 +46,10 @@
   font-weight: var(--knky-body-sm-weight);
   color: var(--knky-color-text-primary);
 }
+/* Required-field marker (Figma: red "*" right after the label text). */
+.required {
+  color: var(--knky-color-status-critical-element);
+}
 
 .action {
   position: relative;
@@ -180,30 +184,40 @@
   cursor: text;
 }
 
-/* --- Interaction states (skipped entirely when disabled or read-only) ---
-   :where() zeroes the specificity of the :has()/:not(:has()) guards so the plain
-   .error class override further down still wins (same fix applied in InputText). */
+/* --- Interaction states (skipped entirely when disabled or the *Figma* read-only
+   state) ---
+   IMPORTANT: "select-only" mode (searchable=false, the default) also sets the
+   native `readOnly` HTML attribute on the input, to block typing while staying
+   interactive (click/keyboard still opens the dropdown). That is a DIFFERENT thing
+   from Figma's "read only" visual state (fully static/non-interactive, grey bg).
+   Using `:has(.input:read-only)` here would wrongly match select-only mode too,
+   making every default/error/etc. select-only field look greyed-out/disabled — a
+   real bug caught via user feedback. So the Figma "read only" visual is driven by
+   the explicit `.static` class (set only from the `readOnly` prop in
+   InputSelect.tsx), never from the native attribute.
+   :where() zeroes the specificity of the guards so the plain .error class override
+   further down still wins (same fix applied in InputText). */
 
-.box:hover:where(:not(:has(.input:disabled)):not(:has(.input:read-only))) {
+.box:hover:where(:not(:has(.input:disabled)):not(.static)) {
   border-color: var(--knky-color-border-hover);
 }
 
 .box:where(:has(.input:not(:placeholder-shown))):where(
-    :not(:has(.input:read-only)):not(:has(.input:disabled))
+    :not(:has(.input:disabled)):not(.static)
   ) {
   border-color: var(--knky-color-border-hover);
 }
 .box:where(:has(.input:not(:placeholder-shown))):where(
-    :not(:has(.input:read-only)):not(:has(.input:disabled))
+    :not(:has(.input:disabled)):not(.static)
   )
   .input {
   color: var(--knky-color-text-primary);
 }
 
-.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled))) {
+.box:focus-within:where(:not(:has(.input:disabled)):not(.static)) {
   border-color: var(--knky-color-border-hover);
 }
-.box:focus-within:where(:not(:has(.input:read-only)):not(:has(.input:disabled)))::after {
+.box:focus-within:where(:not(:has(.input:disabled)):not(.static))::after {
   content: "";
   position: absolute;
   /* Focus ring inset standardized to uniform -3px on every side, matching the
@@ -215,7 +229,7 @@
   pointer-events: none;
 }
 
-/* --- Disabled / read-only --- */
+/* --- Disabled --- */
 
 .box:has(.input:disabled) {
   background: var(--knky-color-bg-surface-disabled);
@@ -229,7 +243,9 @@
   color: var(--knky-color-icon-disabled);
 }
 
-.box:has(.input:read-only) {
+/* Figma "read only" visual state — explicit class driven by the `readOnly` prop,
+   not the native attribute (see the big comment above for why). */
+.box.static {
   background: var(--knky-color-bg-surface-disabled);
 }
 
@@ -284,11 +300,14 @@
 }
 
 /* --- Dropdown listbox popover ---
-   NOT covered by Figma's exposed states (Figma only shows the closed input's 8
-   states) — panel/option styling below infers from the same tokens used elsewhere
-   in the library (border, radius-sm, bg-surface, bg-surface-hover) rather than a
-   confirmed Figma spec. The box-shadow value is a plain literal, no elevation
-   token exists yet in tokens.css. */
+   Container styling confirmed via the "Action list" component (Figma node
+   127:1883/127:2003): border-default, radius-sm, bg-surface, and the exact
+   drop-shadow (0px 0px 8px rgba(0,0,0,0.12)) — no elevation token exists yet in
+   tokens.css for that shadow, so it's a literal value. max-height 375px is
+   Figma's own demo value. Rows are SelectItem/SectionTitle (see those
+   components) — this file only owns the popover shell. Figma shows a custom
+   decorative scrollbar-track asset when the list overflows; we use the native
+   browser scrollbar instead (overflow-y: auto) rather than replicate that asset. */
 
 .listbox {
   box-sizing: border-box;
@@ -297,39 +316,15 @@
   left: 0;
   right: 0;
   z-index: 20;
-  max-height: 240px;
+  max-height: 375px;
   overflow-y: auto;
   margin: 0;
-  padding: var(--knky-space-4);
+  padding: 0;
   list-style: none;
   background: var(--knky-color-bg-surface);
   border: 1px solid var(--knky-color-border);
   border-radius: var(--knky-radius-sm);
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.12);
-}
-
-.option {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  padding: var(--knky-space-6) var(--knky-space-8);
-  border-radius: var(--knky-radius-sm);
-  font-family: var(--knky-font-family-base);
-  font-size: var(--knky-body-lg-size);
-  line-height: var(--knky-body-lg-line-height);
-  font-weight: var(--knky-body-lg-weight);
-  color: var(--knky-color-text-primary);
-  cursor: pointer;
-}
-.option[data-active="true"] {
-  background: var(--knky-color-bg-surface-hover);
-}
-.option[aria-selected="true"] {
-  font-weight: var(--knky-font-weight-semibold);
-}
-.option[aria-disabled="true"] {
-  color: var(--knky-color-text-disabled);
-  cursor: not-allowed;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.12);
 }
 
 .emptyState {
