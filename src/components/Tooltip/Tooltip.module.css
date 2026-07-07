@@ -1,0 +1,71 @@
+/* Styles for Tooltip - matches "Tooltip" in Figma (node 157:2976): 4 tail
+   directions, sharing one content card + one rotated triangle tail. The
+   drop-shadow is applied to the whole wrapper (not just the content box) so it
+   casts as a single unified shape around content + tail together, matching how
+   Figma's own effect is applied to the outer frame, not the inner card alone. */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.12));
+}
+
+.content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  max-width: 420px;
+  padding: var(--knky-space-4) var(--knky-space-8);
+  background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
+  border-radius: var(--knky-radius-sm);
+}
+
+/* Left/right tails align the text left instead of centering it — confirmed via
+   Figma (only bottom/top get `text-align: center`). */
+.alignLeft {
+  align-items: flex-start;
+}
+
+.label {
+  width: 100%;
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-md-size);
+  line-height: var(--knky-body-md-line-height);
+  font-weight: var(--knky-body-md-weight);
+  color: var(--knky-color-text-primary);
+  text-align: center;
+  word-break: break-word;
+}
+.alignLeft .label {
+  text-align: left;
+}
+
+.tail {
+  position: absolute;
+  display: block;
+}
+
+.tailBottom {
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+}
+.tailTop {
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%) rotate(180deg);
+}
+.tailRight {
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%) rotate(-90deg);
+}
+.tailLeft {
+  top: 50%;
+  left: -8px;
+  transform: translateY(-50%) rotate(-90deg) scaleY(-1);
+}

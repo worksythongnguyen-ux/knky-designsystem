@@ -1,0 +1,66 @@
+/* Styles for Scrollable - matches "Utilities/Scrollable" in Figma (node
+   40:5256): a styled scrollbar (thin pill track + rounded thumb, darkening on
+   press) instead of the browser default, plus an optional "Mobile" prev/next
+   arrow-button variant (horizontal only). */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--knky-space-12);
+  width: 100%;
+}
+
+.arrow {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color-scheme: light;
+  color: var(--knky-color-icon-default);
+  cursor: pointer;
+}
+
+.scrollable {
+  flex: 1 0 0;
+  min-width: 0;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--knky-color-icon-default) var(--knky-color-bg-surface-disabled);
+}
+
+.horizontal {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.vertical {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* WebKit (Chrome/Safari/Edge) */
+.scrollable::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollable::-webkit-scrollbar-track {
+  background: var(--knky-color-bg-surface-disabled);
+  border-radius: var(--knky-radius-full);
+}
+.scrollable::-webkit-scrollbar-thumb {
+  background: var(--knky-color-icon-default);
+  border-radius: var(--knky-radius-full);
+}
+.scrollable::-webkit-scrollbar-thumb:active {
+  background: var(--knky-color-icon-active);
+}

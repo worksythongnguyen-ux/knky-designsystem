@@ -74,3 +74,12 @@ export type { BadgeProps, BadgeType, BadgeState } from "./components/Badge";
 
 export { Tag } from "./components/Tag";
 export type { TagProps } from "./components/Tag";
+
+export { Toast } from "./components/Toast";
+export type { ToastProps, ToastState } from "./components/Toast";
+
+export { Tooltip } from "./components/Tooltip";
+export type { TooltipProps, TooltipTail } from "./components/Tooltip";
+
+export { Scrollable } from "./components/Scrollable";
+export type { ScrollableProps, ScrollableOrientation } from "./components/Scrollable";

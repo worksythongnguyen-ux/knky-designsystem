@@ -1,0 +1,56 @@
+/* Styles for Toast - matches "toast" in Figma (node 156:2296): 4 states x 2
+   types (default / has action). Fixed 343px width per Figma (a single size, no
+   responsive variants shown) — the action/close buttons are the real Button
+   component, not reimplemented here. Figma's own effect data didn't include a
+   drop shadow on the card itself, so none is added here — if you place Toast in
+   a floating/overlay context over similarly-colored content, add your own
+   elevation shadow via `className`. */
+
+.toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--knky-space-8);
+  width: 343px;
+  padding: var(--knky-space-4) var(--knky-space-4) var(--knky-space-4) var(--knky-space-6);
+  background: var(--knky-color-bg-surface);
+  border-radius: var(--knky-radius-sm);
+}
+
+.iconBadge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--knky-space-2);
+  border-radius: var(--knky-radius-sm);
+}
+
+.success {
+  background: var(--knky-color-status-success-element);
+}
+.warning {
+  background: var(--knky-color-status-caution-element);
+}
+.error {
+  background: var(--knky-color-status-critical-element);
+}
+/* Info is the one state that uses the light bg tint instead of the solid
+   "element" color — confirmed via both the Dev Mode codegen and the screenshot
+   (a pale blue badge with a blue icon, not white-on-solid like the other 3). */
+.info {
+  background: var(--knky-color-status-info-bg);
+}
+
+.label {
+  flex: 1 0 0;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--knky-font-family-base);
+  font-size: var(--knky-body-mg-size);
+  line-height: var(--knky-body-mg-line-height);
+  font-weight: var(--knky-body-mg-weight);
+  color: var(--knky-color-text-primary);
+}
