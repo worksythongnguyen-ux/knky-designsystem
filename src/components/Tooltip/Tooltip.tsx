@@ -44,7 +44,18 @@ export function Tooltip({ children, tail = "bottom", className }: TooltipProps) 
         height="9"
         aria-hidden="true"
       >
-        <path d="M0.5 0.5H13.5L7 8.5L0.5 0.5Z" fill="var(--knky-color-bg-surface)" stroke="var(--knky-color-border)" />
+        {/* Fill drawn separately from the border stroke: the base edge (the one
+            that touches the content box) has no stroke, so it blends seamlessly
+            into the box instead of showing a doubled-up border line there —
+            only the two outward-facing slanted edges get the border. */}
+        <path d="M0 0H14L7 9L0 0Z" fill="var(--knky-color-bg-surface)" />
+        <path
+          d="M0.5 0.5L7 8.5L13.5 0.5"
+          fill="none"
+          stroke="var(--knky-color-border)"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
       </svg>
     </div>
   );

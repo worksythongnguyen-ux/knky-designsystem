@@ -29,13 +29,15 @@
   align-items: flex-start;
 }
 
+/* Confirmed via Figma: bodySm (13px/20px/Regular-400) — an earlier pass used
+   bodyMd (13px/20px/Semibold-600) by mistake, same size but the wrong weight. */
 .label {
   width: 100%;
   margin: 0;
   font-family: var(--knky-font-family-base);
-  font-size: var(--knky-body-md-size);
-  line-height: var(--knky-body-md-line-height);
-  font-weight: var(--knky-body-md-weight);
+  font-size: var(--knky-body-sm-size);
+  line-height: var(--knky-body-sm-line-height);
+  font-weight: var(--knky-body-sm-weight);
   color: var(--knky-color-text-primary);
   text-align: center;
   word-break: break-word;
