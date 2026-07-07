@@ -10,7 +10,7 @@ const meta: Meta<typeof Scrollable> = {
     docs: {
       description: {
         component:
-          'A scroll container with a styled scrollbar. Design source: Figma node 40:5256 ("Utilities/Scrollable"). Native scrolling (wheel/trackpad/touch/keyboard) works as-is — only the scrollbar chrome is restyled.',
+          'A scroll container with a custom, always-visible draggable scrollbar track + thumb. Design source: Figma node 40:5256 ("Utilities/Scrollable"). Native scroll input (wheel/trackpad/touch/keyboard) works as-is — the browser\'s own scrollbar is hidden and replaced with this custom bar.',
       },
     },
   },
