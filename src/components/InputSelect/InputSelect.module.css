@@ -267,9 +267,9 @@
 
 /* --- Dropdown listbox popover ---
    Container styling confirmed via the "Action list" component (Figma node
-   127:1883/127:2003): border-default, radius-sm, bg-surface, and the exact
-   drop-shadow (0px 0px 8px rgba(0,0,0,0.12)) — no elevation token exists yet in
-   tokens.css for that shadow, so it's a literal value. max-height 375px is
+   127:1883/127:2003): border-default, radius-sm, bg-surface, and the
+   --knky-shadow-elevated drop-shadow (shared with Tooltip/Toast/Toggle's
+   thumb — same value, consolidated into one token). max-height 375px is
    Figma's own demo value. Rows are SelectItem/SectionTitle (see those
    components) — this file only owns the popover shell. Figma shows a custom
    decorative scrollbar-track asset when the list overflows; we use the native
@@ -290,7 +290,7 @@
   background: var(--knky-color-bg-surface);
   border: 1px solid var(--knky-color-border);
   border-radius: var(--knky-radius-sm);
-  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--knky-shadow-elevated);
 }
 
 .emptyState {
