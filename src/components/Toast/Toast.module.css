@@ -49,13 +49,17 @@
   background: var(--knky-color-status-info-bg);
 }
 
+/* bodyLg (14px/20px/Regular-400) — confirmed via get_variable_defs on the Toast
+   node itself. An earlier pass had this as bodyMg (14px/20px/Semibold-600,
+   same pixel size but the wrong weight token) — same size/weight-token mixup
+   pattern seen once before on InputText's large text. */
 .label {
   flex: 1 0 0;
   min-width: 0;
   margin: 0;
   font-family: var(--knky-font-family-base);
-  font-size: var(--knky-body-mg-size);
-  line-height: var(--knky-body-mg-line-height);
-  font-weight: var(--knky-body-mg-weight);
+  font-size: var(--knky-body-lg-size);
+  line-height: var(--knky-body-lg-line-height);
+  font-weight: var(--knky-body-lg-weight);
   color: var(--knky-color-text-primary);
 }
