@@ -121,6 +121,12 @@ export interface CloseIconProps extends IconProps {
   variant?: "default" | "clear";
 }
 
+/* "clear" variant's ring was originally an 18x18 circle (spanning 1-19 in the
+   20x20 viewBox) — outside the 16x16 safe area every icon must stay within
+   (confirmed: Figma's own node has `inset-10%`, i.e. a 2px inset on each
+   side = a 16x16 content box, 2-18). Rescaled the ring to 16x16 (2-18) around
+   the icon's center; the X mark inside was already well within bounds. */
+
 export function CloseIcon({ variant = "default", ...props }: CloseIconProps) {
   if (variant === "clear") {
     return (
@@ -129,7 +135,7 @@ export function CloseIcon({ variant = "default", ...props }: CloseIconProps) {
         <path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1ZM10 2.7002C5.96832 2.7002 2.7002 5.96832 2.7002 10C2.7002 14.0317 5.96832 17.2998 10 17.2998C14.0317 17.2998 17.2998 14.0317 17.2998 10C17.2998 5.96832 14.0317 2.7002 10 2.7002Z"
+          d="M10 2C14.4183 2 18 5.5817 18 10C18 14.4183 14.4183 18 10 18C5.5817 18 2 14.4183 2 10C2 5.5817 5.5817 2 10 2ZM10 3.5113C6.4163 3.5113 3.5113 6.4163 3.5113 10C3.5113 13.5837 6.4163 16.4887 10 16.4887C13.5837 16.4887 16.4887 13.5837 16.4887 10C16.4887 6.4163 13.5837 3.5113 10 3.5113Z"
         />
       </IconSvg>
     );
@@ -265,8 +271,11 @@ export function SearchIcon(props: IconProps) {
 
 /**
  * Generic fallback icon (--knky-icon-placeholder in Figma), used inside other
- * components when no specific icon has been set yet. Four small diamonds arranged
- * in a pinwheel pattern.
+ * components when no specific icon has been set yet. Four small diamonds
+ * arranged in a pinwheel pattern — reverted back after a same-session
+ * misfire: a zoomed-in screenshot of the actual icon node (16:289 / vector
+ * 51:2937) confirmed the pinwheel cluster is correct; an earlier, blurrier
+ * full-page screenshot had been misread as a single diamond.
  */
 export function PlaceholderIcon(props: IconProps) {
   return (
