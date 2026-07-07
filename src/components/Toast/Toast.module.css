@@ -1,10 +1,11 @@
 /* Styles for Toast - matches "toast" in Figma (node 156:2296): 4 states x 2
    types (default / has action). Fixed 343px width per Figma (a single size, no
    responsive variants shown) — the action/close buttons are the real Button
-   component, not reimplemented here. Figma's own effect data didn't include a
-   drop shadow on the card itself, so none is added here — if you place Toast in
-   a floating/overlay context over similarly-colored content, add your own
-   elevation shadow via `className`. */
+   component, not reimplemented here.
+
+   Border: border-default, #e5e5e5. Drop shadow: --knky-shadow-elevated, the
+   same elevation token shared with Tooltip/InputSelect's dropdown/Toggle's
+   thumb. */
 
 .toast {
   box-sizing: border-box;
@@ -15,7 +16,9 @@
   width: 343px;
   padding: var(--knky-space-4) var(--knky-space-4) var(--knky-space-4) var(--knky-space-6);
   background: var(--knky-color-bg-surface);
+  border: 1px solid var(--knky-color-border);
   border-radius: var(--knky-radius-sm);
+  box-shadow: var(--knky-shadow-elevated);
 }
 
 .iconBadge {
@@ -28,18 +31,20 @@
   border-radius: var(--knky-radius-sm);
 }
 
+/* Figma's Toast redesign (re-fetched from node 156:2296): all 4 states now use
+   a light bg-tint chip with a colored icon on top, matching Badge's tinted
+   look — not the earlier solid-color-chip + white-icon treatment. All 4 map
+   directly to the semantic status-*-bg tokens (confirmed via
+   get_variable_defs on this node's own Figma variables). */
 .success {
-  background: var(--knky-color-status-success-element);
+  background: var(--knky-color-status-success-bg);
 }
 .warning {
-  background: var(--knky-color-status-caution-element);
+  background: var(--knky-color-status-caution-bg);
 }
 .error {
-  background: var(--knky-color-status-critical-element);
+  background: var(--knky-color-status-critical-bg);
 }
-/* Info is the one state that uses the light bg tint instead of the solid
-   "element" color — confirmed via both the Dev Mode codegen and the screenshot
-   (a pale blue badge with a blue icon, not white-on-solid like the other 3). */
 .info {
   background: var(--knky-color-status-info-bg);
 }

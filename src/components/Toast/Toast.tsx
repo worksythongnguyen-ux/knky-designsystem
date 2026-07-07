@@ -19,9 +19,9 @@ export interface ToastProps {
 }
 
 const STATUS_ICON: Record<ToastState, ReactNode> = {
-  success: <CheckIcon size={20} color="var(--knky-color-neutral-white)" />,
-  warning: <AlertWarningIcon size={20} color="var(--knky-color-neutral-white)" />,
-  error: <AlertErrorIcon size={20} color="var(--knky-color-neutral-white)" />,
+  success: <CheckIcon size={20} color="var(--knky-color-status-success-element)" />,
+  warning: <AlertWarningIcon size={20} color="var(--knky-color-status-caution-element)" />,
+  error: <AlertErrorIcon size={20} color="var(--knky-color-status-critical-element)" />,
   info: <AlertInfoIcon size={20} color="var(--knky-color-status-info-element)" />,
 };
 

@@ -13,6 +13,16 @@ const meta: Meta<typeof Tooltip> = {
       },
     },
   },
+  // Same reasoning as Toast's decorator: bg-surface + border-default nearly
+  // disappear against Storybook's plain white canvas. Figma shows this on the
+  // app's gray page background, so stories get that same backdrop.
+  decorators: [
+    (Story) => (
+      <div style={{ background: "var(--knky-color-bg-page)", padding: 24 }}>
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     tail: { control: "radio", options: ["top", "bottom", "left", "right"] },
   },

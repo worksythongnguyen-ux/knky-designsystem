@@ -7,7 +7,7 @@
 .wrapper {
   position: relative;
   display: inline-flex;
-  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.12));
+  filter: drop-shadow(var(--knky-shadow-elevated));
 }
 
 .content {

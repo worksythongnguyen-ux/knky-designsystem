@@ -75,8 +75,6 @@ export const semanticColorGroups: { title: string; tokens: TokenEntry[] }[] = [
       { token: "--knky-color-status-caution-element", name: "caution-element" },
       { token: "--knky-color-status-info-bg", name: "info-bg" },
       { token: "--knky-color-status-info-element", name: "info-element" },
-      { token: "--knky-color-badge-bg-success", name: "badge-bg-success" },
-      { token: "--knky-color-badge-bg-warning", name: "badge-bg-warning" },
     ],
   },
   {
@@ -116,6 +114,10 @@ export const radiusScale: TokenEntry[] = [
   { token: "--knky-radius-xl", name: "xl" },
   { token: "--knky-radius-2xl", name: "2xl" },
   { token: "--knky-radius-full", name: "full" },
+];
+
+export const shadowScale: TokenEntry[] = [
+  { token: "--knky-shadow-elevated", name: "elevated" },
 ];
 
 export const typographyScale: {

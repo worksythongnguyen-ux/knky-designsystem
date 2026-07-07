@@ -1,11 +1,12 @@
 import { Meta } from "@storybook/addon-docs/blocks";
 import "./tokens.css";
-import { ColorGroup, SpaceSwatch, RadiusSwatch, TypeSample } from "./TokenPreview";
+import { ColorGroup, SpaceSwatch, RadiusSwatch, ShadowSwatch, TypeSample } from "./TokenPreview";
 import {
   primitiveColorGroups,
   semanticColorGroups,
   spaceScale,
   radiusScale,
+  shadowScale,
   typographyScale,
 } from "./tokenData";
 
@@ -43,6 +44,14 @@ values — the swatches below always show the live value currently in `tokens.cs
 <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
   {radiusScale.map((r) => (
     <RadiusSwatch key={r.token} token={r.token} name={r.name} />
+  ))}
+</div>
+
+## Elevation
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+  {shadowScale.map((s) => (
+    <ShadowSwatch key={s.token} token={s.token} name={s.name} />
   ))}
 </div>
 

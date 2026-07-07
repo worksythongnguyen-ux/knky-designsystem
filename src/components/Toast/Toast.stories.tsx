@@ -13,6 +13,18 @@ const meta: Meta<typeof Toast> = {
       },
     },
   },
+  // Toast is a bg-surface (white) card with a border-default (#e5e5e5, very
+  // close to white) and a soft shadow — on Storybook's plain white canvas
+  // both nearly disappear. Figma's own mockup places it on the app's gray
+  // page background (bg-page), which is what actually gives the
+  // border/shadow visible contrast, so every story gets that same backdrop.
+  decorators: [
+    (Story) => (
+      <div style={{ background: "var(--knky-color-bg-page)", padding: 24 }}>
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     state: { control: "radio", options: ["success", "warning", "error", "info"] },
   },

@@ -114,6 +114,25 @@ export function RadiusSwatch({ token, name }: TokenEntry) {
   );
 }
 
+export function ShadowSwatch({ token, name }: TokenEntry) {
+  const value = useTokenValue(token);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", width: 140 }}>
+      <div
+        style={{
+          height: 64,
+          width: 120,
+          background: "var(--knky-color-bg-surface)",
+          borderRadius: 8,
+          boxShadow: `var(${token})`,
+        }}
+      />
+      <div style={{ fontSize: 12, fontWeight: 600, marginTop: 10 }}>{name}</div>
+      <div style={{ fontSize: 11, color: "#6d6d6d" }}>{value}</div>
+    </div>
+  );
+}
+
 export interface TypeSampleProps {
   name: string;
   sizeVar: string;

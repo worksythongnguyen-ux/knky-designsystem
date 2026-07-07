@@ -135,7 +135,19 @@
   /* Focus ring color, confirmed via the Input text component (Figma var --color/border/active). */
   --knky-color-border-active: var(--knky-color-blue-700);
 
-  --knky-color-status-success-bg: var(--knky-color-green-100);
+  /* success-bg/caution-bg corrected to the 50-step (green-50 #e7f9e9,
+     yellow-50 #fffae0) — confirmed via get_variable_defs on both the Badge
+     and Toast components independently returning the exact same
+     "color/status/sucess/bg" / "color/status/caution/bg" hex values. An
+     earlier pass had bound these to the 100-step instead (a separate,
+     darker "Alert line"-only shade that turned out to have no actual
+     consumer in this codebase — nothing was relying on the darker value),
+     and had introduced separate badge-bg-success/badge-bg-warning tokens
+     to work around the mismatch. Since the 50-step is what the semantic
+     token is actually meant to resolve to, that workaround was removed;
+     Badge and Toast both reference status-success-bg/status-caution-bg
+     directly now. */
+  --knky-color-status-success-bg: var(--knky-color-green-50);
   /* Corrected against the Alert line component (Figma var --color/status/sucess/element,
      #06730e) — the earlier value transcribed from the Colors doc page was off by one
      step on the scale (green/700 instead of green/800). */
@@ -145,7 +157,7 @@
      values transcribed from the Colors doc page were off by one step on the scale. */
   --knky-color-status-critical-bg: var(--knky-color-red-50);
   --knky-color-status-critical-element: var(--knky-color-red-800);
-  --knky-color-status-caution-bg: var(--knky-color-yellow-100);
+  --knky-color-status-caution-bg: var(--knky-color-yellow-50);
   /* Corrected against the Alert line component (Figma var --color/status/caution/element,
      #897300) — the earlier value transcribed from the Colors doc page was off by two
      steps on the scale (yellow/700 instead of yellow/900). */
@@ -156,16 +168,6 @@
      before Badge needed one. */
   --knky-color-status-info-bg: var(--knky-color-blue-50);
   --knky-color-status-info-element: var(--knky-color-blue-800);
-
-  /* Badge-only success/caution background tints — confirmed via the Badge component
-     (Figma vars --color/status/sucess/bg, #e7f9e9 and --color/status/caution/bg,
-     #fffae0), which use a lighter tint (the 50-step) than the shared
-     status-success-bg/status-caution-bg tokens above (100-step, deliberately matched
-     to the Alert line component instead — see comments above). Kept as distinct
-     tokens rather than changing the shared ones, since both are independently
-     confirmed against their own Figma source and aren't meant to be the same value. */
-  --knky-color-badge-bg-success: var(--knky-color-green-50);
-  --knky-color-badge-bg-warning: var(--knky-color-yellow-50);
 
   --knky-color-link: var(--knky-color-blue-400);
   --knky-color-link-hover: var(--knky-color-blue-600);
@@ -292,4 +294,18 @@
   --knky-heading-3xl-size: 36px;
   --knky-heading-3xl-line-height: 48px;
   --knky-heading-3xl-weight: var(--knky-font-weight-bold);
+
+  /* ==========================================================================
+     ELEVATION
+     Same shadow value appeared raw (and independently, not via a shared
+     token) on Toggle's thumb, Tooltip, Toast, and InputSelect's dropdown —
+     one token here so any future floating/raised surface reuses it instead
+     of a fifth copy of the same rgba string.
+     ========================================================================== */
+
+  /* No spread param (equivalent to spread: 0) so this same value works both
+     as a `box-shadow` (Toggle/Toast/InputSelect) and inside a
+     `filter: drop-shadow(...)` (Tooltip) — drop-shadow's syntax doesn't
+     accept a 4th (spread) length value. */
+  --knky-shadow-elevated: 0 0 8px rgba(0, 0, 0, 0.12);
 }

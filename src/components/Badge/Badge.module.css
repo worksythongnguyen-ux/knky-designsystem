@@ -54,7 +54,7 @@
 
 /* --- success --- */
 .success {
-  background: var(--knky-color-badge-bg-success);
+  background: var(--knky-color-status-success-bg);
 }
 .success .label {
   color: var(--knky-color-status-success-element);
@@ -76,7 +76,7 @@
 
 /* --- warning --- */
 .warning {
-  background: var(--knky-color-badge-bg-warning);
+  background: var(--knky-color-status-caution-bg);
 }
 .warning .label {
   color: var(--knky-color-status-caution-element);
