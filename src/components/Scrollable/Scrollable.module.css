@@ -12,6 +12,7 @@
   align-items: center;
   gap: var(--knky-space-12);
   width: 100%;
+  background: var(--knky-color-bg-surface);
 }
 
 .arrow {
@@ -75,6 +76,9 @@
   overflow-x: hidden;
 }
 
+/* Track and thumb are two stacked "Scrollable background" lines in Figma —
+   confirmed they share the same thickness (8px), not a thin-track/thick-thumb
+   pairing as an earlier pass assumed from a misleading screenshot proportion. */
 .track {
   position: relative;
   flex-shrink: 0;
@@ -83,11 +87,11 @@
 }
 .track.horizontal {
   width: 100%;
-  height: 4px;
+  height: 8px;
 }
 .track.vertical {
   height: 100%;
-  width: 4px;
+  width: 8px;
 }
 
 .thumb {
