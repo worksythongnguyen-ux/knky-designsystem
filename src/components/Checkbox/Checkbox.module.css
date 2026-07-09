@@ -104,8 +104,15 @@
   background: var(--knky-color-bg-surface-disabled);
   border-color: transparent;
 }
+/* Bug fix: the tick/minus glyph was never actually shown for disabled+checked
+   or disabled+indeterminate — the only rule that flips `display: none` to
+   `display: block` was scoped to `:checked:not(:disabled)` /
+   `:indeterminate:not(:disabled)` above, so a disabled+checked box silently
+   rendered as an empty gray square with no glyph at all. Confirmed against
+   Figma (node 37:3719): the tick is present, just muted to icon-disabled. */
 .input:disabled:checked ~ .box .tick,
 .input:disabled:indeterminate ~ .box .minus {
+  display: block;
   color: var(--knky-color-icon-disabled);
 }
 

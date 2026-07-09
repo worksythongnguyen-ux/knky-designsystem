@@ -104,7 +104,17 @@ export const TriStateCycle: Story = {
             indeterminate={state === "indeterminate"}
             onChange={next}
           />
-          <span>Click through: {state}</span>
+          <span
+            style={{
+              fontFamily: "var(--knky-font-family-base)",
+              fontSize: "var(--knky-body-md-size)",
+              lineHeight: "var(--knky-body-md-line-height)",
+              fontWeight: "var(--knky-body-md-weight)" as never,
+              color: "var(--knky-color-text-primary)",
+            }}
+          >
+            Click through: {state}
+          </span>
         </label>
       );
     }
